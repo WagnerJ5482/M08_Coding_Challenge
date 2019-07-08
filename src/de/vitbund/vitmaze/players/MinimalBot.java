@@ -46,7 +46,23 @@ public class MinimalBot {
 			System.err.println("Ergebnis Vorrunde: " + lastActionsResult);
 			
 			// Rundenaktion ausgeben
-			System.out.println("go west");
+			if(currentCellStatus.contains("FINISH " + playerId + " 0")) {
+				System.out.println("FINISH 1 0");
+			}
+			else if(northCellStatus.equals("FLOOR")) {
+				System.out.println("go north");
+			}
+			else if(eastCellStatus.equals("FLOOR")) {
+				System.out.println("go east");
+			}
+			else if(southCellStatus.equals("FLOOR")) {
+				System.out.println("go south");
+			}
+			else if(westCellStatus.equals("FLOOR")) {
+				System.out.println("go west");
+			}
+			
+			System.out.println("go north");
 		}
 		
 		// Eingabe schliessen (letzte Aktion)
