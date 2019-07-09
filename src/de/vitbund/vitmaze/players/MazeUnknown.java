@@ -1,20 +1,15 @@
 package de.vitbund.vitmaze.players;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class MazeUnknown {
 	int laenge;
 	int breite;
 	int level;
-	int[][] flaeche;
-	
-	String lastActionsResult;
-	String currentCellStatus;
-	String northCellStatus;
-	String eastCellStatus;
-	String southCellStatus;
-	String westCellStatus;
-	
+	Map<int[], String> maze = new HashMap<int[], String>();
 	
 	public MazeUnknown(Scanner input) {
 		// INIT - Auslesen der Initialdaten
@@ -23,45 +18,34 @@ public class MazeUnknown {
 		this.setLaenge(input.nextInt()); // Y-Groesse des Spielfeldes (Hoehe)
 		this.setLevel(input.nextInt()); // Level des Matches
 		input.nextLine(); // Beenden der ersten Zeile
-		this.flaeche = new int[breite][laenge];
-		befuelleFlaeche();
-		
+		fillMaze();
 	}
 	
-	private void befuelleFlaeche() {
-		for (int i = 0; i < flaeche.length; i++) {
-			for (int j = 0; j < flaeche[i].length; j++) {
-				
+	public void fillMaze() {
+		for (int i = 0; i < getBreite(); i++) {
+			for (int j = 0; j < getLaenge(); j++) {
+				int[] k = {i,j};
+				maze.put(k, "UNKNOWN");
 			}
 		}
 	}
-
-	public void benachbarteFelderFuellen(Scanner input) {
-	 setLastActionsResult(input.nextLine());
-	 setCurrentCellStatus(input.nextLine());
-	 setNorthCellStatus(input.nextLine());
-	 setEastCellStatus(input.nextLine());
-	 setSouthCellStatus(input.nextLine());
-	 setWestCellStatus(input.nextLine());
-	 }
 	
-	public String bewegeBot(MortalComBot bot) {
-			
-		if (getNorthCellStatus().equals("FLOOR") && getLastActionsResult().contains("NORTH")) return "go north";
-		if (getEastCellStatus().equals("FLOOR")&& getLastActionsResult().contains("EAST")) return "go east";
-		if (getSouthCellStatus().equals("FLOOR")&& getLastActionsResult().contains("SOUTH")) return "go south";
-		if (getWestCellStatus().equals("FLOOR")&& getLastActionsResult().contains("WEST")) return "go west";
-		pruefeSB(bot);
-		return "";	
+	public void setzeBot(MortalComBot bot) {
+		int[] koordinaten = {bot.getStartX(),bot.getStartY()};
+		maze.put(koordinaten,"FLOOR");
+		setzeNachbarn(bot);
 	}
 	
-	public String pruefeSB(MortalComBot bot) {
-		if (currentCellStatus.equals("FINISH "+bot.getPlayerId()+" 0")){
-			return "FINISH 1 0";
-			}
+	public String setzeNachbarn(MortalComBot bot) {
+		if(bot.getEastCellStatus().equals("FLOOR")) {
+			int[] east = {bot.getStartX()-1,bot.getStartY()};
+		}
+		if(bot.getEastCellStatus().equals("FLOOR")) {
+			int[] east = {bot.getStartX()-1,bot.getStartY()};
+		}
 		return "";
 	}
-	
+
 	public int getLaenge() {
 		return laenge;
 	}
@@ -79,63 +63,6 @@ public class MazeUnknown {
 	}
 	public void setLevel(int level) {
 		this.level = level;
-	}
-
-
-	public String getLastActionsResult() {
-		return lastActionsResult;
-	}
-
-	public void setLastActionsResult(String lastActionsResult) {
-		this.lastActionsResult = lastActionsResult;
-	}
-
-	public String getCurrentCellStatus() {
-		return currentCellStatus;
-	}
-
-	public void setCurrentCellStatus(String currentCellStatus) {
-		this.currentCellStatus = currentCellStatus;
-	}
-
-	public String getNorthCellStatus() {
-		return northCellStatus;
-	}
-
-	public void setNorthCellStatus(String northCellStatus) {
-		this.northCellStatus = northCellStatus;
-	}
-
-	public String getEastCellStatus() {
-		return eastCellStatus;
-	}
-
-	public void setEastCellStatus(String eastCellStatus) {
-		this.eastCellStatus = eastCellStatus;
-	}
-
-	public String getSouthCellStatus() {
-		return southCellStatus;
-	}
-
-	public void setSouthCellStatus(String southCellStatus) {
-		this.southCellStatus = southCellStatus;
-	}
-
-	public String getWestCellStatus() {
-		return westCellStatus;
-	}
-
-	public void setWestCellStatus(String westCellStatus) {
-		this.westCellStatus = westCellStatus;
-	}
-
-	public int[][] getFlaeche() {
-		return flaeche;
-	}
-
-	public void setFlaeche(int[][] flaeche) {
-		this.flaeche = flaeche;
 	}
 
 }

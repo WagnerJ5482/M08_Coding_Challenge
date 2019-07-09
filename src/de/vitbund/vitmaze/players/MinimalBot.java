@@ -27,11 +27,11 @@ public class MinimalBot {
 		
 			
 			// Rundeninformationen auslesen
-			maze.benachbarteFelderFuellen(input);
-			System.out.println(maze.bewegeBot(bot));
+			bot.benachbarteFelderErkennen(input);
+			System.out.println(bot.bewegeBot());
 	
 			// Debug Information ausgeben (optional möglich)
-			System.err.println("Ergebnis Vorrunde: " + maze.getLastActionsResult());
+			System.err.println("Ergebnis Vorrunde: " + bot.getLastActionsResult());
 //			
 //			// Rundenaktion ausgeben
 //			if(currentCellStatus.contains("FINISH " + bot.getPlayerId() + " 0")) {
