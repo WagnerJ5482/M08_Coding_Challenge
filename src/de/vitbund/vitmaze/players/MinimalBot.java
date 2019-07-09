@@ -17,36 +17,28 @@ public class MinimalBot {
 	public static void main(String[] args) {
 		// Scanner zum Auslesen der Standardeingabe, welche Initialisierungs- und Rundendaten liefert
 		Scanner input = new Scanner(System.in);
+		MazeUnknown maze = new MazeUnknown(input);
+		MortalComBot bot = new MortalComBot(input);
 
 
-		// INIT - Auslesen der Initialdaten
-		// 1. Zeile: Maze Infos
-		int sizeX = input.nextInt(); // X-Groesse des Spielfeldes (Breite)
-		int sizeY = input.nextInt(); // Y-Groesse des Spielfeldes (Hoehe)
-		int level = input.nextInt(); // Level des Matches
-		input.nextLine(); // Beenden der ersten Zeile
-		// 2. Zeile: Player Infos
-		int playerId = input.nextInt(); // id dieses Players / Bots
-		int startX = input.nextInt(); // X-Koordinate der Startposition dieses Player
-		int startY = input.nextInt(); // Y-Koordinate der Startposition dieses Players
-		input.nextLine(); // Beenden der zweiten Zeile
-
-		
+	
 		// TURN (Wiederholung je Runde notwendig)
 		while(input.hasNext()) {
+		
+			
 			// Rundeninformationen auslesen
-			String lastActionsResult = input.nextLine();
-			String currentCellStatus = input.nextLine();
-			String northCellStatus = input.nextLine();
-			String eastCellStatus = input.nextLine();
-			String southCellStatus = input.nextLine();
-			String westCellStatus = input.nextLine();
+			maze.benachbarteFelderFuellen(input);
+			System.out.println(maze.bewegeBot(bot));
 	
 			// Debug Information ausgeben (optional möglich)
-			System.err.println("Ergebnis Vorrunde: " + lastActionsResult);
+			System.err.println("Ergebnis Vorrunde: " + maze.getLastActionsResult());
+//			
+//			// Rundenaktion ausgeben
+//			if(currentCellStatus.contains("FINISH " + bot.getPlayerId() + " 0")) {
+//				System.out.println("FINISH 1 0");
+//			}
+//			System.out.println("go west");
 			
-			// Rundenaktion ausgeben
-			System.out.println("go west");
 		}
 		
 		// Eingabe schliessen (letzte Aktion)
