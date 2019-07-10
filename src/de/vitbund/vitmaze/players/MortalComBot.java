@@ -1,5 +1,7 @@
 package de.vitbund.vitmaze.players;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class MortalComBot {
@@ -7,6 +9,8 @@ public class MortalComBot {
 	int playerId;
 	int startX;
 	int startY;
+	int currentX;
+	int currentY;
 	
 	String lastActionsResult;
 	String currentCellStatus;
@@ -21,11 +25,13 @@ public class MortalComBot {
 		this.setPlayerId(input.nextInt()); // id dieses Players / Bots
 		this.setStartX(input.nextInt()); // X-Koordinate der Startposition dieses Player
 		this.setStartY(input.nextInt()); // Y-Koordinate der Startposition dieses Players
+		setCurrentX(getStartX());
+		setCurrentY(getStartY());
 		input.nextLine(); // Beenden der zweiten Zeile
 	}
 	
 
-	public void benachbarteFelderErkennen(Scanner input) {
+	public void benachbarteFelderAuslesen(Scanner input) {
 	 setLastActionsResult(input.nextLine());
 	 setCurrentCellStatus(input.nextLine());
 	 setNorthCellStatus(input.nextLine());
@@ -34,14 +40,17 @@ public class MortalComBot {
 	 setWestCellStatus(input.nextLine());
 	 }
 	
-	public String bewegeBot() {
-		
-		if (getNorthCellStatus().equals("FLOOR") && getLastActionsResult().contains("NORTH")) return "go north";
-		if (getEastCellStatus().equals("FLOOR")&& getLastActionsResult().contains("EAST")) return "go east";
-		if (getSouthCellStatus().equals("FLOOR")&& getLastActionsResult().contains("SOUTH")) return "go south";
-		if (getWestCellStatus().equals("FLOOR")&& getLastActionsResult().contains("WEST")) return "go west";
-		pruefeSB();
-		return "";	
+	public Map<String,String> gibBegebareFelderZurück() {
+		Map<String, String> begebareFelder = new HashMap<String, String>();
+		if (("FLOOR").equals(getNorthCellStatus())){
+			
+		}
+		return begebareFelder;
+	}
+	
+	
+	public String bewegeBot(String richtung) {
+		return "go "+richtung;	
 	}
 	
 	public String pruefeSB() {
@@ -105,6 +114,26 @@ public class MortalComBot {
 	}
 	public void setWestCellStatus(String westCellStatus) {
 		this.westCellStatus = westCellStatus;
+	}
+
+
+	public int getCurrentX() {
+		return currentX;
+	}
+
+
+	public void setCurrentX(int currentX) {
+		this.currentX = currentX;
+	}
+
+
+	public int getCurrentY() {
+		return currentY;
+	}
+
+
+	public void setCurrentY(int currentY) {
+		this.currentY = currentY;
 	}
 
 	

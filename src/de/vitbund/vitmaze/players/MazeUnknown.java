@@ -3,6 +3,7 @@ package de.vitbund.vitmaze.players;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 public class MazeUnknown {
@@ -30,22 +31,45 @@ public class MazeUnknown {
 		}
 	}
 	
-	public void setzeBot(MortalComBot bot) {
-		int[] koordinaten = {bot.getStartX(),bot.getStartY()};
-		maze.put(koordinaten,"FLOOR");
-		setzeNachbarn(bot);
+	public void setzeBotAufStartfeld(MortalComBot bot) {
+		int[] startFeld = {bot.getCurrentX(),bot.getCurrentY()};
+		maze.put(startFeld,"FLOOR");
+		setzeNachbarFelderInListe(bot);
 	}
 	
-	public String setzeNachbarn(MortalComBot bot) {
-		if(bot.getEastCellStatus().equals("FLOOR")) {
-			int[] east = {bot.getStartX()-1,bot.getStartY()};
-		}
-		if(bot.getEastCellStatus().equals("FLOOR")) {
-			int[] east = {bot.getStartX()-1,bot.getStartY()};
-		}
-		return "";
+
+	public void setzeNachbarFelderInListe(MortalComBot bot) {
+		int[] east = {bot.getCurrentX()-1,bot.getCurrentY()};
+		if(("FLOOR").equals(bot.getEastCellStatus())) {
+			maze.put(east,"FLOOR");
+		} else maze.put(east,"WALL");
+		int[] west = {bot.getCurrentX()+1,bot.getCurrentY()};
+		if(("FLOOR").equals(bot.getWestCellStatus())) {
+			maze.put(west,"FLOOR");
+		} else maze.put(west,"WALL");
+		int[] south = {bot.getCurrentX(),bot.getCurrentY()+1};
+		if(("FLOOR").equals(bot.getSouthCellStatus())) {
+			maze.put(south,"FLOOR");
+		}else maze.put(south,"WALL");
+		int[] north = {bot.getCurrentX(),bot.getCurrentY()-1};
+		if(("FLOOR").equals(bot.getNorthCellStatus())) {
+			maze.put(north,"FLOOR");
+		}else maze.put(north,"WALL");
 	}
 
+	public String bewegeBot(MortalComBot bot) {
+		Map<int[], String> floorMaze = new HashMap<int[], String>();
+		floorMaze.remove(floorMaze.containsValue("WALL"));
+		for(String kachelArt : floorMaze.values()) {
+			if(("FLOOR").equals(kachelArt)) {
+				
+			}
+		}
+		return " ";
+		
+	}
+	
+	
 	public int getLaenge() {
 		return laenge;
 	}
