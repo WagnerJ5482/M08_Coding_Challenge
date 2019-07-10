@@ -28,8 +28,8 @@ public class MinimalBot {
 			
 			// Rundeninformationen auslesen
 			bot.benachbarteFelderAuslesen(input);
-			maze.setzeBotAufStartfeld(bot);
-			maze.bewegeBot(bot);
+			maze.setzeNachbarFelderInListe(bot);
+			System.out.println(maze.bewegeBot(bot));
 	
 			// Debug Information ausgeben (optional möglich)
 			System.err.println("Ergebnis Vorrunde: " + bot.getLastActionsResult());
