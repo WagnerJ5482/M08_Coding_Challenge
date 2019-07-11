@@ -1,9 +1,7 @@
 package de.vitbund.vitmaze.players;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Scanner;
 
@@ -12,7 +10,7 @@ public class MortalComBot {
 	private int playerId;
 	private int currentY;
 	private int currentX;
-	private int formulare =0;
+	private int[] formulare = new int[100];
 	
 	private Feld currentFeld;
 	private Feld northFeld;
@@ -46,10 +44,10 @@ public class MortalComBot {
 	 }
 	
 	public void erzeugeBenachbarteFelder() {
-		setNorthFeld(new Feld((getCurrentX()),(getCurrentY()-1),getNorthCellStatus()));
-		setEastFeld(new Feld((getCurrentX()+1),(getCurrentY()),getNorthCellStatus()));
-		setSouthFeld(new Feld((getCurrentX()),(getCurrentY()+1),getNorthCellStatus()));
-		setWestFeld(new Feld((getCurrentX()-1),(getCurrentY()),getNorthCellStatus()));
+		setNorthFeld(new Feld((getCurrentX()),(getCurrentY()-1),getNorthCellStatus(),"north"));
+		setEastFeld(new Feld((getCurrentX()+1),(getCurrentY()),getNorthCellStatus(),"east"));
+		setSouthFeld(new Feld((getCurrentX()),(getCurrentY()+1),getNorthCellStatus(),"south"));
+		setWestFeld(new Feld((getCurrentX()-1),(getCurrentY()),getNorthCellStatus(),"west"));
 		fuelleNachbarFelder();
 		
 	}
@@ -66,20 +64,27 @@ public class MortalComBot {
 	public void setzeBot() {
 		switch(getLastActionsResult()) {
 			case "OK":
-				setCurrentFeld(new Feld (getCurrentX(),getCurrentY(),getCurrentCellStatus()));
+				setCurrentFeld(new Feld (getCurrentX(),getCurrentY(),getCurrentCellStatus(),""));
 				erzeugeBenachbarteFelder();
+				break;
 			case "OK north":
 				setCurrentFeld(northFeld);
 				erzeugeBenachbarteFelder();
+				break;
 			case "OK west":
 				setCurrentFeld(westFeld);
 				erzeugeBenachbarteFelder();
+				break;
 			case "OK south":
 				setCurrentFeld(southFeld);
 				erzeugeBenachbarteFelder();
+				break;
 			case "OK east":
 				setCurrentFeld(eastFeld);
 				erzeugeBenachbarteFelder();
+				break;
+			default: 
+				break;
 		}
 	}
 	
@@ -88,11 +93,9 @@ public class MortalComBot {
 	}
 	
 	public String pruefeSB() {
-		if (currentCellStatus.equals("FINISH "+this.getPlayerId()+" 0")){
-			return "FINISH 1 0";
-			}
-		return "";
-	}
+		String ausgabe = "FINISH "+this.getPlayerId()+" "+this.getFormulare();
+		return ausgabe;}
+			
 	
 	public int getPlayerId() {
 		return playerId;
@@ -136,82 +139,52 @@ public class MortalComBot {
 	public void setWestCellStatus(String westCellStatus) {
 		this.westCellStatus = westCellStatus;
 	}
-
-
 	public int getCurrentX() {
 		return currentX;
 	}
-
-
 	public void setCurrentX(int currentX) {
 		this.currentX = currentX;
 	}
-
-
 	public int getCurrentY() {
 		return currentY;
 	}
-
-
 	public void setCurrentY(int currentY) {
 		this.currentY = currentY;
 	}
-
-
 	public Feld getCurrentFeld() {
 		return currentFeld;
 	}
-
-
 	public void setCurrentFeld(Feld currentFeld) {
 		this.currentFeld = currentFeld;
 	}
-
-
 	public Feld getNorthFeld() {
 		return northFeld;
 	}
-
-
 	public void setNorthFeld(Feld northFeld) {
 		this.northFeld = northFeld;
 	}
-
-
 	public Feld getEastFeld() {
 		return eastFeld;
 	}
-
-
 	public void setEastFeld(Feld eastFeld) {
 		this.eastFeld = eastFeld;
 	}
-
-
 	public Feld getSouthFeld() {
 		return southFeld;
 	}
-
-
 	public void setSouthFeld(Feld southFeld) {
 		this.southFeld = southFeld;
 	}
-
-
 	public Feld getWestFeld() {
 		return westFeld;
 	}
-
-
 	public void setWestFeld(Feld westFeld) {
 		this.westFeld = westFeld;
 	}
-
-	public int getFormulare() {
+	public int[] getFormulare() {
 		return formulare;
 	}
-
-	public void setFormulare(int formulare) {
+	public void setFormulare(int[] formulare) {
 		this.formulare = formulare;
 	}
 

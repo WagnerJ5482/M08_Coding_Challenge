@@ -2,10 +2,7 @@ package de.vitbund.vitmaze.players;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Scanner;
 
 public class MazeUnknown {
@@ -13,8 +10,8 @@ public class MazeUnknown {
 	private int breite;
 	private int level;
 	private Collection<Feld> maze = new ArrayList<Feld>();
-	private Collection<Feld> freieFelder = new ArrayList<Feld>();
-	
+	private ArrayList<Feld> freieFelder = new ArrayList<Feld>();
+
 	public MazeUnknown(Scanner input) {
 		// INIT - Auslesen der Initialdaten
 		// 1. Zeile: Maze Infos
@@ -24,47 +21,37 @@ public class MazeUnknown {
 		input.nextLine(); // Beenden der ersten Zeile
 		fillMaze();
 	}
-	
+
 	public void fillMaze() {
 		for (int i = 0; i < getBreite(); i++) {
 			for (int j = 0; j < getLaenge(); j++) {
-				Feld k = new Feld(i,j," ? ");
+				Feld k = new Feld(i, j, " ? ", "");
 				maze.add(k);
 			}
 		}
 	}
 
+	public String fuegeFreieFelderInListe(MortalComBot bot) {
+		for (Feld feld : bot.fuelleNachbarFelder()) {
+			if (bot.pruefeSB().equals(feld.getTyp())) {
+				return bot.bewegeBot(feld.getHimmelsrichtung());
+			} else if (("FLOOR").equals(feld.getTyp())) {
+				this.freieFelder.add(feld);
+				return "";
+			}else if (("FORM").equals(feld.getTyp())){
+				return bot.bewegeBot(feld.getHimmelsrichtung());
+			}
+		}
+		return "";
 
-	public void fuegeFreieFelderInListe(MortalComBot bot) {
-		String s = "FINISH "+bot.getPlayerId()+ " "+bot.getFormulare();
-		if(("FLOOR").equals(bot.getNorthFeld().getTyp())) {
-			freieFelder.add(bot.getNorthFeld());
-		}
-		if(("FLOOR").equals(bot.getWestFeld().getTyp())) {
-			freieFelder.add(bot.getWestFeld());
-		} 
-		if(("FLOOR").equals(bot.getSouthFeld().getTyp())) {
-			freieFelder.add(bot.getSouthFeld());
-		}
-		if(("FLOOR").equals(bot.getEastFeld().getTyp())) {
-			freieFelder.add(bot.getEastFeld());
-		}
-		if(s.equals(bot.getNorthFeld().getTyp())) {
-			freieFelder.add(bot.getNorthFeld());
-		}
-		if(("FLOOR").equals(bot.getWestFeld().getTyp())) {
-			freieFelder.add(bot.getWestFeld());
-		} 
-		if(("FLOOR").equals(bot.getSouthFeld().getTyp())) {
-			freieFelder.add(bot.getSouthFeld());
-		}
-		if(("FLOOR").equals(bot.getEastFeld().getTyp())) {
-			freieFelder.add(bot.getEastFeld());
-		}
-		if()
+	}
+	
+	public String bewegeBot(MortalComBot bot) {
+		Random zufall = new Random();
+		Feld zufallFeld = (freieFelder).get(zufall.nextInt(freieFelder.size()));// ToDO: Erklärung!!!
+		return bot.bewegeBot(zufallFeld.getHimmelsrichtung());
 	}
 
-	
 	public int getLaenge() {
 		return laenge;
 	}
@@ -83,12 +70,10 @@ public class MazeUnknown {
 	public void setLevel(int level) {
 		this.level = level;
 	}
-
 	public Collection<Feld> getFreieFelder() {
 		return freieFelder;
 	}
-
-	public void setFreieFelder(Collection<Feld> freieFelder) {
+	public void setFreieFelder(ArrayList<Feld> freieFelder) {
 		this.freieFelder = freieFelder;
 	}
 

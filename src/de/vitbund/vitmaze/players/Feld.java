@@ -4,6 +4,7 @@ public class Feld {
 	private int xKoordinate;
 	private int yKoordinate;
 	private String typ;
+	private String himmelsrichtung;
 	/*
 	 * Standard Konstruktor;
 	 */
@@ -14,10 +15,11 @@ public class Feld {
 	/*
 	 * Konstruktor zum generieren eines Level - Feldes
 	 */
-	public Feld (int x, int y, String typ) {
+	public Feld (int x, int y, String typ, String himmelsrichtung) {
 		setxKoordinate(x);
 		setyKoordinate(y);
 		setTyp(typ);
+		setHimmelsrichtung(himmelsrichtung);
 	}
 
 
@@ -45,6 +47,14 @@ public class Feld {
 
 	public void setTyp(String typ) {
 		this.typ = typ;
+	}
+
+	public String getHimmelsrichtung() {
+		return himmelsrichtung;
+	}
+
+	public void setHimmelsrichtung(String himmelsrichtung) {
+		this.himmelsrichtung = himmelsrichtung;
 	}
 
 }

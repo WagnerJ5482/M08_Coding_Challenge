@@ -27,10 +27,25 @@ public class MinimalBot {
 		
 			
 			// Rundeninformationen auslesen
+			bot.felderAuslesen(input);
 			bot.setzeBot();
-			bot.benachbarteFelderAuslesen(input);
 			
-			maze.setzeNachbarFelderInListe(bot);
+			System.err.println(bot.getCurrentFeld().getTyp());
+			System.err.println(bot.getNorthFeld().getTyp());
+			System.err.println(bot.getWestFeld().getTyp());
+			System.err.println(bot.getSouthFeld().getTyp());
+			System.err.println(bot.getEastFeld().getTyp());
+			
+			System.err.println(bot.getNorthFeld().getHimmelsrichtung());
+			System.err.println(bot.getWestFeld().getHimmelsrichtung());
+			System.err.println(bot.getSouthFeld().getHimmelsrichtung());
+			System.err.println(bot.getEastFeld().getHimmelsrichtung());
+			
+			System.err.println(maze.getFreieFelder().toString());
+			
+			
+			
+			System.out.println(maze.fuegeFreieFelderInListe(bot));
 			System.out.println(maze.bewegeBot(bot));
 	
 			// Debug Information ausgeben (optional möglich)
