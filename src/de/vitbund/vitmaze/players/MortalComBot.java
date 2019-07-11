@@ -1,7 +1,10 @@
 package de.vitbund.vitmaze.players;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Scanner;
 
 public class MortalComBot {
@@ -9,6 +12,7 @@ public class MortalComBot {
 	private int playerId;
 	private int currentY;
 	private int currentX;
+	private int formulare =0;
 	
 	private Feld currentFeld;
 	private Feld northFeld;
@@ -31,7 +35,7 @@ public class MortalComBot {
 		input.nextLine(); // Beenden der zweiten Zeile
 	}
 
-	public void benachbarteFelderAuslesen(Scanner input) {
+	public void felderAuslesen(Scanner input) {
 	 setLastActionsResult(input.nextLine());
 	 setCurrentCellStatus(input.nextLine()); // der aktuelle Feld-Status;
 	 setNorthCellStatus(input.nextLine());
@@ -46,19 +50,37 @@ public class MortalComBot {
 		setEastFeld(new Feld((getCurrentX()+1),(getCurrentY()),getNorthCellStatus()));
 		setSouthFeld(new Feld((getCurrentX()),(getCurrentY()+1),getNorthCellStatus()));
 		setWestFeld(new Feld((getCurrentX()-1),(getCurrentY()),getNorthCellStatus()));
+		fuelleNachbarFelder();
 		
+	}
+	
+	public Collection<Feld> fuelleNachbarFelder(){
+		Queue<Feld> collNachbarFelder = new LinkedList<Feld>(); 
+		collNachbarFelder.add(getNorthFeld());
+		collNachbarFelder.add(getEastFeld());
+		collNachbarFelder.add(getSouthFeld());
+		collNachbarFelder.add(getWestFeld());
+		return collNachbarFelder;
 	}
 
 	public void setzeBot() {
-		setCurrentFeld(new Feld (getCurrentX(),getCurrentY(),getCurrentCellStatus()));
-	}
-	
-	public Map<String,String> gibBegebareFelderZurück() {
-		Map<String, String> begebareFelder = new HashMap<String, String>();
-		if (("FLOOR").equals(getNorthCellStatus())){
-			
+		switch(getLastActionsResult()) {
+			case "OK":
+				setCurrentFeld(new Feld (getCurrentX(),getCurrentY(),getCurrentCellStatus()));
+				erzeugeBenachbarteFelder();
+			case "OK north":
+				setCurrentFeld(northFeld);
+				erzeugeBenachbarteFelder();
+			case "OK west":
+				setCurrentFeld(westFeld);
+				erzeugeBenachbarteFelder();
+			case "OK south":
+				setCurrentFeld(southFeld);
+				erzeugeBenachbarteFelder();
+			case "OK east":
+				setCurrentFeld(eastFeld);
+				erzeugeBenachbarteFelder();
 		}
-		return begebareFelder;
 	}
 	
 	public String bewegeBot(String richtung) {
@@ -183,6 +205,14 @@ public class MortalComBot {
 
 	public void setWestFeld(Feld westFeld) {
 		this.westFeld = westFeld;
+	}
+
+	public int getFormulare() {
+		return formulare;
+	}
+
+	public void setFormulare(int formulare) {
+		this.formulare = formulare;
 	}
 
 	

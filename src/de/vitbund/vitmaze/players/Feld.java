@@ -12,7 +12,7 @@ public class Feld {
 	}
 	
 	/*
-	 * Konstruktor zum generieren eines Level 1 Feldes
+	 * Konstruktor zum generieren eines Level - Feldes
 	 */
 	public Feld (int x, int y, String typ) {
 		setxKoordinate(x);

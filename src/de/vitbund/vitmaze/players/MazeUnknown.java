@@ -13,13 +13,14 @@ public class MazeUnknown {
 	private int breite;
 	private int level;
 	private Collection<Feld> maze = new ArrayList<Feld>();
+	private Collection<Feld> freieFelder = new ArrayList<Feld>();
 	
 	public MazeUnknown(Scanner input) {
 		// INIT - Auslesen der Initialdaten
 		// 1. Zeile: Maze Infos
-		this.setBreite(input.nextInt()); // X-Groesse des Spielfeldes (Breite)
-		this.setLaenge(input.nextInt()); // Y-Groesse des Spielfeldes (Hoehe)
-		this.setLevel(input.nextInt()); // Level des Matches
+		setBreite(input.nextInt()); // X-Groesse des Spielfeldes (Breite)
+		setLaenge(input.nextInt()); // Y-Groesse des Spielfeldes (Hoehe)
+		setLevel(input.nextInt()); // Level des Matches
 		input.nextLine(); // Beenden der ersten Zeile
 		fillMaze();
 	}
@@ -34,36 +35,35 @@ public class MazeUnknown {
 	}
 
 
-	public void setzeNachbarFelderInListe(MortalComBot bot) {
-		if(("FLOOR").equals(bot.getEastCellStatus())) {
-			maze.put(east,level1Maze("FLOOR"));
-		} else maze.put(east,level1Maze("WALL"));
-		if(("FLOOR").equals(bot.getWestCellStatus())) {
-			maze.put(west,level1Maze("FLOOR"));
-		} else maze.put(west,level1Maze("WALL"));
-		if(("FLOOR").equals(bot.getSouthCellStatus())) {
-			maze.put(south,level1Maze("FLOOR"));
-		}else maze.put(south,level1Maze("WALL"));
-		if(("FLOOR").equals(bot.getNorthCellStatus())) {
-			maze.put(north,level1Maze("FLOOR"));
-		}else maze.put(north,level1Maze("WALL"));
-	}
-
-	public String bewegeBot(MortalComBot bot) {
-//		Map<int[], String> floorMaze = new HashMap<int[], String>();
-		
-		for(Entry<int[], String[]> entry: maze.entrySet()){
-			if(entry.getValue().equals("FLOOR")) {
-				System.err.println("X: "+entry.getKey()[0]);
-				System.err.println("Y: "+entry.getKey()[1]);
-				
-			}
+	public void fuegeFreieFelderInListe(MortalComBot bot) {
+		String s = "FINISH "+bot.getPlayerId()+ " "+bot.getFormulare();
+		if(("FLOOR").equals(bot.getNorthFeld().getTyp())) {
+			freieFelder.add(bot.getNorthFeld());
 		}
-
-		return "go west";
-		
+		if(("FLOOR").equals(bot.getWestFeld().getTyp())) {
+			freieFelder.add(bot.getWestFeld());
+		} 
+		if(("FLOOR").equals(bot.getSouthFeld().getTyp())) {
+			freieFelder.add(bot.getSouthFeld());
+		}
+		if(("FLOOR").equals(bot.getEastFeld().getTyp())) {
+			freieFelder.add(bot.getEastFeld());
+		}
+		if(s.equals(bot.getNorthFeld().getTyp())) {
+			freieFelder.add(bot.getNorthFeld());
+		}
+		if(("FLOOR").equals(bot.getWestFeld().getTyp())) {
+			freieFelder.add(bot.getWestFeld());
+		} 
+		if(("FLOOR").equals(bot.getSouthFeld().getTyp())) {
+			freieFelder.add(bot.getSouthFeld());
+		}
+		if(("FLOOR").equals(bot.getEastFeld().getTyp())) {
+			freieFelder.add(bot.getEastFeld());
+		}
+		if()
 	}
-	
+
 	
 	public int getLaenge() {
 		return laenge;
@@ -82,6 +82,14 @@ public class MazeUnknown {
 	}
 	public void setLevel(int level) {
 		this.level = level;
+	}
+
+	public Collection<Feld> getFreieFelder() {
+		return freieFelder;
+	}
+
+	public void setFreieFelder(Collection<Feld> freieFelder) {
+		this.freieFelder = freieFelder;
 	}
 
 }
