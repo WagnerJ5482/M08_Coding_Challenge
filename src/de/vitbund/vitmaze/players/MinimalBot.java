@@ -28,6 +28,7 @@ public class MinimalBot {
 			
 			// Rundeninformationen auslesen
 			bot.benachbarteFelderAuslesen(input);
+			bot.setzeBot();
 			maze.setzeNachbarFelderInListe(bot);
 			System.out.println(maze.bewegeBot(bot));
 	

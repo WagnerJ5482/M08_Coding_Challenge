@@ -6,39 +6,52 @@ import java.util.Scanner;
 
 public class MortalComBot {
 	
-	int playerId;
-	int startX;
-	int startY;
-	int currentX;
-	int currentY;
+	private int playerId;
+	private int currentY;
+	private int currentX;
 	
-	String lastActionsResult;
-	String currentCellStatus;
-	String northCellStatus;
-	String eastCellStatus;
-	String southCellStatus;
-	String westCellStatus;
+	private Feld currentFeld;
+	private Feld northFeld;
+	private Feld eastFeld;
+	private Feld southFeld;
+	private Feld westFeld;
 	
+	private String lastActionsResult;
+	private String currentCellStatus;
+	private String northCellStatus;
+	private String eastCellStatus;
+	private String southCellStatus;
+	private String westCellStatus;
 	
 	public MortalComBot(Scanner input) {
 		// 2. Zeile: Player Infos
-		this.setPlayerId(input.nextInt()); // id dieses Players / Bots
-		this.setStartX(input.nextInt()); // X-Koordinate der Startposition dieses Player
-		this.setStartY(input.nextInt()); // Y-Koordinate der Startposition dieses Players
-		setCurrentX(getStartX());
-		setCurrentY(getStartY());
+		setPlayerId(input.nextInt()); // id dieses Players / Bots
+		setCurrentX(input.nextInt());// X-Koordinate der Startposition dieses Player
+		setCurrentY(input.nextInt());// Y-Koordinate der Startposition dieses Players
 		input.nextLine(); // Beenden der zweiten Zeile
 	}
-	
 
 	public void benachbarteFelderAuslesen(Scanner input) {
 	 setLastActionsResult(input.nextLine());
-	 setCurrentCellStatus(input.nextLine());
+	 setCurrentCellStatus(input.nextLine()); // der aktuelle Feld-Status;
 	 setNorthCellStatus(input.nextLine());
 	 setEastCellStatus(input.nextLine());
 	 setSouthCellStatus(input.nextLine());
 	 setWestCellStatus(input.nextLine());
+	 erzeugeBenachbarteFelder();
 	 }
+	
+	public void erzeugeBenachbarteFelder() {
+		setNorthFeld(new Feld((getCurrentX()),(getCurrentY()-1),getNorthCellStatus()));
+		setEastFeld(new Feld((getCurrentX()+1),(getCurrentY()),getNorthCellStatus()));
+		setSouthFeld(new Feld((getCurrentX()),(getCurrentY()+1),getNorthCellStatus()));
+		setWestFeld(new Feld((getCurrentX()-1),(getCurrentY()),getNorthCellStatus()));
+		
+	}
+
+	public void setzeBot() {
+		setCurrentFeld(new Feld (getCurrentX(),getCurrentY(),getCurrentCellStatus()));
+	}
 	
 	public Map<String,String> gibBegebareFelderZurück() {
 		Map<String, String> begebareFelder = new HashMap<String, String>();
@@ -47,7 +60,6 @@ public class MortalComBot {
 		}
 		return begebareFelder;
 	}
-	
 	
 	public String bewegeBot(String richtung) {
 		return "go "+richtung;	
@@ -60,24 +72,11 @@ public class MortalComBot {
 		return "";
 	}
 	
-	
 	public int getPlayerId() {
 		return playerId;
 	}
 	public void setPlayerId(int playerId) {
 		this.playerId = playerId;
-	}
-	public int getStartX() {
-		return startX;
-	}
-	public void setStartX(int startX) {
-		this.startX = startX;
-	}
-	public int getStartY() {
-		return startY;
-	}
-	public void setStartY(int startY) {
-		this.startY = startY;
 	}
 	public String getLastActionsResult() {
 		return lastActionsResult;
@@ -134,6 +133,56 @@ public class MortalComBot {
 
 	public void setCurrentY(int currentY) {
 		this.currentY = currentY;
+	}
+
+
+	public Feld getCurrentFeld() {
+		return currentFeld;
+	}
+
+
+	public void setCurrentFeld(Feld currentFeld) {
+		this.currentFeld = currentFeld;
+	}
+
+
+	public Feld getNorthFeld() {
+		return northFeld;
+	}
+
+
+	public void setNorthFeld(Feld northFeld) {
+		this.northFeld = northFeld;
+	}
+
+
+	public Feld getEastFeld() {
+		return eastFeld;
+	}
+
+
+	public void setEastFeld(Feld eastFeld) {
+		this.eastFeld = eastFeld;
+	}
+
+
+	public Feld getSouthFeld() {
+		return southFeld;
+	}
+
+
+	public void setSouthFeld(Feld southFeld) {
+		this.southFeld = southFeld;
+	}
+
+
+	public Feld getWestFeld() {
+		return westFeld;
+	}
+
+
+	public void setWestFeld(Feld westFeld) {
+		this.westFeld = westFeld;
 	}
 
 	
