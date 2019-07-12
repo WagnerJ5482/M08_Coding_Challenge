@@ -1,6 +1,5 @@
 package de.vitbund.vitmaze.players;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -11,6 +10,7 @@ public class MortalComBot {
 	private int currentY;
 	private int currentX;
 	private int[] formulare = new int[100];
+	private Queue<Feld> collNachbarFelder = new LinkedList<Feld>();
 	
 	private Feld currentFeld;
 	private Feld northFeld;
@@ -24,6 +24,7 @@ public class MortalComBot {
 	private String eastCellStatus;
 	private String southCellStatus;
 	private String westCellStatus;
+	private String naechstesFeld;
 	
 	public MortalComBot(Scanner input) {
 		// 2. Zeile: Player Infos
@@ -33,7 +34,7 @@ public class MortalComBot {
 		input.nextLine(); // Beenden der zweiten Zeile
 	}
 
-	public void felderAuslesen(Scanner input) {
+	public void felderEinlesen(Scanner input) {
 	 setLastActionsResult(input.nextLine());
 	 setCurrentCellStatus(input.nextLine()); // der aktuelle Feld-Status;
 	 setNorthCellStatus(input.nextLine());
@@ -45,20 +46,18 @@ public class MortalComBot {
 	
 	public void erzeugeBenachbarteFelder() {
 		setNorthFeld(new Feld((getCurrentX()),(getCurrentY()-1),getNorthCellStatus(),"north"));
-		setEastFeld(new Feld((getCurrentX()+1),(getCurrentY()),getNorthCellStatus(),"east"));
-		setSouthFeld(new Feld((getCurrentX()),(getCurrentY()+1),getNorthCellStatus(),"south"));
-		setWestFeld(new Feld((getCurrentX()-1),(getCurrentY()),getNorthCellStatus(),"west"));
+		setEastFeld(new Feld((getCurrentX()+1),(getCurrentY()),getEastCellStatus(),"east"));
+		setSouthFeld(new Feld((getCurrentX()),(getCurrentY()+1),getSouthCellStatus(),"south"));
+		setWestFeld(new Feld((getCurrentX()-1),(getCurrentY()),getWestCellStatus(),"west"));
 		fuelleNachbarFelder();
 		
 	}
 	
-	public Collection<Feld> fuelleNachbarFelder(){
-		Queue<Feld> collNachbarFelder = new LinkedList<Feld>(); 
+	public void fuelleNachbarFelder(){
 		collNachbarFelder.add(getNorthFeld());
 		collNachbarFelder.add(getEastFeld());
 		collNachbarFelder.add(getSouthFeld());
 		collNachbarFelder.add(getWestFeld());
-		return collNachbarFelder;
 	}
 
 	public void setzeBot() {
@@ -82,20 +81,25 @@ public class MortalComBot {
 			case "OK east":
 				setCurrentFeld(eastFeld);
 				erzeugeBenachbarteFelder();
-				break;
+				break;	
 			default: 
 				break;
 		}
 	}
 	
-	public String bewegeBot(String richtung) {
-		return "go "+richtung;	
+	public String bewegeBot() {
+		if (getCurrentCellStatus().equals(pruefeSB())) {
+			return "finish";
+		}else return "go "+getNaechstesFeld();	
 	}
 	
 	public String pruefeSB() {
-		String ausgabe = "FINISH "+this.getPlayerId()+" "+this.getFormulare();
+		String ausgabe = "FINISH "+this.getPlayerId()+" 0";
 		return ausgabe;}
-			
+	
+	public void loeschecollNachbarFelder() {
+		this.collNachbarFelder = new LinkedList<Feld>();
+	}
 	
 	public int getPlayerId() {
 		return playerId;
@@ -187,6 +191,17 @@ public class MortalComBot {
 	public void setFormulare(int[] formulare) {
 		this.formulare = formulare;
 	}
+
+	public void setzeNaechstesFeld(String himmelsrichtung) {
+		this.naechstesFeld = himmelsrichtung;
+	}
+	public String getNaechstesFeld() {
+		return naechstesFeld;
+	}
+	public Queue<Feld> getCollNachbarFelder() {
+		return collNachbarFelder;
+	}
+
 
 	
 	

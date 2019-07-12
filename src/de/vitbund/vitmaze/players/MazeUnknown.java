@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Random;
 import java.util.Scanner;
 
+import sun.text.normalizer.CharTrie.FriendAgent;
+
 public class MazeUnknown {
 	private int laenge;
 	private int breite;
@@ -31,25 +33,30 @@ public class MazeUnknown {
 		}
 	}
 
-	public String fuegeFreieFelderInListe(MortalComBot bot) {
-		for (Feld feld : bot.fuelleNachbarFelder()) {
-			if (bot.pruefeSB().equals(feld.getTyp())) {
-				return bot.bewegeBot(feld.getHimmelsrichtung());
-			} else if (("FLOOR").equals(feld.getTyp())) {
+	public void fuegeFreieFelderInListe(MortalComBot bot) {
+		for (Feld feld : bot.getCollNachbarFelder()) {
+			if (!("WALL").equals(feld.getTyp())) {
 				this.freieFelder.add(feld);
-				return "";
 			}else if (("FORM").equals(feld.getTyp())){
-				return bot.bewegeBot(feld.getHimmelsrichtung());
+				bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
 			}
 		}
-		return "";
-
 	}
 	
-	public String bewegeBot(MortalComBot bot) {
-		Random zufall = new Random();
-		Feld zufallFeld = (freieFelder).get(zufall.nextInt(freieFelder.size()));// ToDO: Erklärung!!!
-		return bot.bewegeBot(zufallFeld.getHimmelsrichtung());
+	public void sucheSB(MortalComBot bot) {
+		for (Feld feld : bot.getCollNachbarFelder()) {
+			if (feld.getTyp().equals(bot.pruefeSB())){
+				System.err.println(feld.getHimmelsrichtung());
+				bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
+				bot.bewegeBot();
+			}else naechstesFeld(bot);
+		}
+	}
+	
+	public void naechstesFeld(MortalComBot bot) {
+		Random zufall = new Random(); // neues Random Objekt, namens zufall
+		int zufallsZahl = zufall.nextInt(freieFelder.size()); //Ganzahlige Zufallszahl zwischen 0 und 10
+		bot.setzeNaechstesFeld(freieFelder.get(zufallsZahl).getHimmelsrichtung());
 	}
 
 	public int getLaenge() {

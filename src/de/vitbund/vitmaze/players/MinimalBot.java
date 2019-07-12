@@ -27,35 +27,38 @@ public class MinimalBot {
 		
 			
 			// Rundeninformationen auslesen
-			bot.felderAuslesen(input);
+			bot.felderEinlesen(input);
 			bot.setzeBot();
-			
-			System.err.println(bot.getCurrentFeld().getTyp());
-			System.err.println(bot.getNorthFeld().getTyp());
-			System.err.println(bot.getWestFeld().getTyp());
-			System.err.println(bot.getSouthFeld().getTyp());
-			System.err.println(bot.getEastFeld().getTyp());
-			
-			System.err.println(bot.getNorthFeld().getHimmelsrichtung());
-			System.err.println(bot.getWestFeld().getHimmelsrichtung());
-			System.err.println(bot.getSouthFeld().getHimmelsrichtung());
-			System.err.println(bot.getEastFeld().getHimmelsrichtung());
-			
-			System.err.println(maze.getFreieFelder().toString());
-			
-			
-			
-			System.out.println(maze.fuegeFreieFelderInListe(bot));
-			System.out.println(maze.bewegeBot(bot));
+			bot.fuelleNachbarFelder();
+			maze.fuegeFreieFelderInListe(bot);
+			maze.sucheSB(bot);
+			bot.loeschecollNachbarFelder();
 	
 			// Debug Information ausgeben (optional möglich)
 			System.err.println("Ergebnis Vorrunde: " + bot.getLastActionsResult());
-//			
-//			// Rundenaktion ausgeben
-//			if(currentCellStatus.contains("FINISH " + bot.getPlayerId() + " 0")) {
-//				System.out.println("FINISH 1 0");
-//			}
-//			System.out.println("go west");
+//			System.err.println("current: "+bot.getCurrentFeld().getTyp());
+//			System.err.println("CX: "+bot.getCurrentFeld().getxKoordinate());
+//			System.err.println("CY: "+bot.getCurrentFeld().getyKoordinate());
+//			System.err.println("Norden: "+bot.getNorthFeld().getTyp());
+//			System.err.println("NX: "+bot.getNorthFeld().getxKoordinate());
+//			System.err.println("NY: "+bot.getNorthFeld().getyKoordinate());
+//			System.err.println("Westen: "+bot.getWestFeld().getTyp());
+//			System.err.println("WX: "+bot.getWestFeld().getxKoordinate());
+//			System.err.println("WY: "+bot.getWestFeld().getyKoordinate());
+//			System.err.println("Sueden: "+bot.getSouthFeld().getTyp());
+//			System.err.println("SX: "+bot.getSouthFeld().getxKoordinate());
+//			System.err.println("SY: "+bot.getSouthFeld().getyKoordinate());
+//			System.err.println("Osten: "+bot.getEastFeld().getTyp());
+//			System.err.println("OX: "+bot.getEastFeld().getxKoordinate());
+//			System.err.println("OY: "+bot.getEastFeld().getyKoordinate());
+			System.err.println("Freie Felder Anzahl: "+maze.getFreieFelder().size());// geht noch besser!!!
+			System.err.println("was ist dein SB?: "+bot.pruefeSB());
+			System.err.println("SB gefunden? :"+bot.getWestCellStatus());
+			System.err.println("SB gefunden? :"+bot.getEastCellStatus());
+			System.err.println("SB gefunden? :"+bot.getNorthCellStatus());
+			System.err.println("SB gefunden? :"+bot.getSouthCellStatus());
+			// Rundenaktion ausgeben
+			System.out.println(bot.bewegeBot());
 			
 		}
 		
