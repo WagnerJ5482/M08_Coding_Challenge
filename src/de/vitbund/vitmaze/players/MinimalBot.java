@@ -32,7 +32,6 @@ public class MinimalBot {
 			bot.fuelleNachbarFelder();
 			maze.fuegeFreieFelderInListe(bot);
 			maze.sucheSB(bot);
-			bot.loeschecollNachbarFelder();
 	
 			// Debug Information ausgeben (optional möglich)
 			System.err.println("Ergebnis Vorrunde: " + bot.getLastActionsResult());
@@ -52,11 +51,12 @@ public class MinimalBot {
 //			System.err.println("OX: "+bot.getEastFeld().getxKoordinate());
 //			System.err.println("OY: "+bot.getEastFeld().getyKoordinate());
 			System.err.println("Freie Felder Anzahl: "+maze.getFreieFelder().size());// geht noch besser!!!
-			System.err.println("was ist dein SB?: "+bot.pruefeSB());
-			System.err.println("SB gefunden? :"+bot.getWestCellStatus());
-			System.err.println("SB gefunden? :"+bot.getEastCellStatus());
-			System.err.println("SB gefunden? :"+bot.getNorthCellStatus());
-			System.err.println("SB gefunden? :"+bot.getSouthCellStatus());
+			System.err.println("");
+//			System.err.println("was ist dein SB?: "+bot.pruefeSB());
+//			System.err.println("SB gefunden? :"+bot.getWestCellStatus());
+//			System.err.println("SB gefunden? :"+bot.getEastCellStatus());
+//			System.err.println("SB gefunden? :"+bot.getNorthCellStatus());
+//			System.err.println("SB gefunden? :"+bot.getSouthCellStatus());
 			// Rundenaktion ausgeben
 			System.out.println(bot.bewegeBot());
 			

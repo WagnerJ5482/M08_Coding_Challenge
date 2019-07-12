@@ -57,4 +57,8 @@ public class Feld {
 		this.himmelsrichtung = himmelsrichtung;
 	}
 
+	public String getSchluessel() {
+		return getxKoordinate()+","+getyKoordinate();
+	}
+
 }

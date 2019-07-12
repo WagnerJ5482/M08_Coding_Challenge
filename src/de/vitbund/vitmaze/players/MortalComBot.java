@@ -59,6 +59,14 @@ public class MortalComBot {
 		collNachbarFelder.add(getSouthFeld());
 		collNachbarFelder.add(getWestFeld());
 	}
+	
+
+//	public void loeschecollNachbarFelder() {
+//		collNachbarFelder.remove(getNorthFeld());
+//		collNachbarFelder.remove(getEastFeld());
+//		collNachbarFelder.remove(getSouthFeld());
+//		collNachbarFelder.remove(getWestFeld());
+//	}
 
 	public void setzeBot() {
 		switch(getLastActionsResult()) {
@@ -96,10 +104,7 @@ public class MortalComBot {
 	public String pruefeSB() {
 		String ausgabe = "FINISH "+this.getPlayerId()+" 0";
 		return ausgabe;}
-	
-	public void loeschecollNachbarFelder() {
-		this.collNachbarFelder = new LinkedList<Feld>();
-	}
+
 	
 	public int getPlayerId() {
 		return playerId;
