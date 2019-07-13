@@ -45,22 +45,22 @@ public class MazeUnknown {
 	}
 
 	public void sucheSB(MortalComBot bot) {
-		for (Feld feld : bot.getCollNachbarFelder()) {
-			if (feld.getTyp().equals(bot.pruefeSB())) {
-				bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
+		for (Feld nachbarFeld : bot.getCollNachbarFelder()) {
+			if (nachbarFeld.getTyp().equals(bot.pruefeSB())) {
+				bot.setzeNaechstesFeld(nachbarFeld.getHimmelsrichtung());
 				bot.bewegeBot();
 			} else
-				naechstesFeld(bot);
+				naechstesFeld(nachbarFeld, bot);
 		}
 	}
 
-	public void naechstesFeld(MortalComBot bot) {
+	public void naechstesFeld(Feld nachbarFeld, MortalComBot bot) {
 		List<String> keys = new ArrayList<String>();
-		for (Feld feld : bot.getCollNachbarFelder()) {
-			keys.add(feld.getSchluessel());
+		if (!("WALL").equals(nachbarFeld.getTyp())) {
+			keys.add(nachbarFeld.getSchluessel());
 		}
 		Collections.shuffle(keys);
-//		bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
+		bot.setzeNaechstesFeld(freieFelder.get(keys.get(1)).getHimmelsrichtung());
 	}
 
 	public int getLaenge() {
