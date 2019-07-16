@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class MortalComBot {
 	
 	private final int playerId;
+	private boolean sbFound = false;
 	private int currentY;
 	private int currentX;
 	private int[] formulare = new int[100];
@@ -27,7 +28,7 @@ public class MortalComBot {
 	private String southCellStatus;
 	private String westCellStatus;
 	private String naechstesFeld;
-
+	
 	
 	public MortalComBot(Scanner input) {
 		// 2. Zeile: Player Infos
@@ -38,6 +39,7 @@ public class MortalComBot {
 	}
 
 	public void felderEinlesen(Scanner input) {
+	
 	 setLastActionsResult(input.nextLine());
 	 setCurrentCellStatus(input.nextLine()); // der aktuelle Feld-Status;
 	 setNorthCellStatus(input.nextLine());
@@ -70,27 +72,27 @@ public class MortalComBot {
 				erzeugeBenachbarteFelder(maze);
 				break;
 			case "OK north":
-				getNorthFeld().setBesucht(true);
+				getSouthFeld().setBesucht(true);
 //				northFeld.setWegeKosten((northFeld.getWegeKosten()-1));
-				setCurrentFeld(northFeld);
+//				setCurrentFeld(northFeld);
 				erzeugeBenachbarteFelder(maze);
 				break;
 			case "OK west":
-				getWestFeld().setBesucht(true);
+				getEastFeld().setBesucht(true);
 //				westFeld.setWegeKosten((westFeld.getWegeKosten()-1));
-				setCurrentFeld(westFeld);
+//				setCurrentFeld(westFeld);
 				erzeugeBenachbarteFelder(maze);
 				break;
 			case "OK south":
-				getSouthFeld().setBesucht(true);
+				getNorthFeld().setBesucht(true);
 //				southFeld.setWegeKosten((southFeld.getWegeKosten()-1));
-				setCurrentFeld(southFeld);
+//				setCurrentFeld(southFeld);
 				erzeugeBenachbarteFelder(maze);
 				break;
 			case "OK east":
-				getEastFeld().setBesucht(true);
+				getWestFeld().setBesucht(true);
 //				eastFeld.setWegeKosten((eastFeld.getWegeKosten()-1));
-				setCurrentFeld(eastFeld);
+//				setCurrentFeld(westFeld);
 				erzeugeBenachbarteFelder(maze);
 				break;	
 			default: 
@@ -111,17 +113,14 @@ public class MortalComBot {
 	}
 	
 	
-	public boolean sucheSB() {
-		boolean sbFound = false;
+	public void sucheSB() {
 		for (Feld nachbarFeld : getNachbarFelder()) {
 			if (nachbarFeld.getTyp().equals(geheZuSachbearbeiter())) {
-				sbFound = true;
-//				setzeNaechstesFeld(nachbarFeld.getHimmelsrichtung());
-//				System.out.println(bewegeNach());
-				return sbFound;
+				this.sbFound = true;
+				setzeNaechstesFeld(nachbarFeld.getHimmelsrichtung());
+				bewegeNach();
 			}
 		}
-		return sbFound;
 	}
 	
 	public String geheZuSachbearbeiter() {
@@ -129,9 +128,22 @@ public class MortalComBot {
 		return ausgabe;}
 	
 
-	public String bewegeNach() {
-		if(sucheSB()==true) return geheZuSachbearbeiter();
-		else return "go "+getNaechstesFeld();	
+	public void bewegeNach() {
+//		if(sucheSB()==true) {
+//			switch (getNaechstesFeld()) {
+//				case "north":
+//					setCurrentFeld(northFeld);
+//				case "east":
+//					setCurrentFeld(eastFeld);
+//				case "south":
+//					setCurrentFeld(southFeld);
+//				case "west":
+//					setCurrentFeld(westFeld);
+//					
+//			System.out.println(geheZuSachbearbeiter());
+//			}
+//		}
+		System.out.println("go "+getNaechstesFeld());	
 }
 	
 	public int getPlayerId() {
@@ -240,6 +252,10 @@ public class MortalComBot {
 	public String getLetzteHimmelsrichtung() {
 		letzteHimmelsrichtung = getLastActionsResult().split(" ");
 		return letzteHimmelsrichtung[2];
+	}
+
+	public boolean isSbFound() {
+		return sbFound;
 	}
 
 //	public void setLetzteHimmelsrichtung(String[] letzteHimmelsrichtung) {

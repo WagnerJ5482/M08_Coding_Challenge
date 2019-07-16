@@ -24,18 +24,18 @@ public class MinimalBot {
 	
 		// TURN (Wiederholung je Runde notwendig)
 		while(input.hasNext()) {
+			if(bot.isSbFound() == true) System.out.println("finish");
 		
 			
 			// Rundeninformationen auslesen
 			bot.felderEinlesen(input);
 			bot.setzeBot(maze);
 			bot.fuelleNachbarFelder(maze);
+			bot.sucheSB();
 			maze.moeglicheFelder(bot);
-			do {
-				maze.naechstesFeld(bot);}
-			while (maze.naechstesFeld(bot)==false);
+			maze.naechstesFeld(bot);
 			
-			System.out.println(bot.bewegeNach());
+//			bot.bewegeNach();
 	
 			// Debug Information ausgeben (optional möglich)
 			System.err.println("Ergebnis Vorrunde: " + bot.getLastActionsResult());
@@ -65,7 +65,7 @@ public class MinimalBot {
 //			System.err.println("SB gefunden? :"+bot.getNorthCellStatus());
 //			System.err.println("SB gefunden? :"+bot.getSouthCellStatus());
 			// Rundenaktion ausgeben
-			System.out.println(bot.bewegeNach());
+//			System.out.println(bot.bewegeNach());
 		}
 		
 		// Eingabe schliessen (letzte Aktion)

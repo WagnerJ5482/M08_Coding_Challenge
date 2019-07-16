@@ -14,8 +14,10 @@ public class MazeUnknown {
 	private int laenge;
 	private int breite;
 	private int level;
+	
 	private Collection<Feld> maze = new ArrayList<Feld>();
 	private Collection<Feld> moeglicheFelder;
+	
 	private Map<String, Feld> freieFelder = new HashMap<String, Feld>();
 
 	public MazeUnknown(Scanner input) {
@@ -31,7 +33,7 @@ public class MazeUnknown {
 	public void fillMaze() {
 		for (int i = 0; i < getBreite(); i++) {
 			for (int j = 0; j < getLaenge(); j++) {
-				Feld k = new Feld(i, j, " ? ", "", 99, false);
+				Feld k = new Feld(i, j, "", "", 99, false);
 				maze.add(k);
 			}
 		}
@@ -55,38 +57,9 @@ public class MazeUnknown {
 				bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
 				return true;	
 			}
-			
-//			System.out.println(bot.bewegeNach());
-			break;
-		
-		List<Integer> minKosten = new ArrayList<Integer>();
-		List<Feld> unbekannteFelder = new ArrayList<Feld>();
-		Queue<Feld> gelaufenerWeg = new LinkedList<Feld>();
-
-//		String[] randomFeld = new String[moeglicheFelder.size()];
-//		int counterRandomFeld = 0;
-
-		for (Feld feld : moeglicheFelder) {
-			minKosten.add(feld.getWegeKosten());
 		}
-
-		for (Feld feld : moeglicheFelder) {
-			System.err.println("Größe: "+moeglicheFelder.size());
-			System.err.println("Feld : " + feld.getHimmelsrichtung() + ";" + feld.isBesucht() + ";"+feld.getSchluessel());
-			
-			}else {
-			if ((feld.isBesucht() == false)) { // && (feld.getWegeKosten()==Collections.min(minKosten))
-				unbekannteFelder.add(feld);
-			}
-			if ((feld.isBesucht() == true)) {
-				System.err.println("Da war ich schon");
-				gelaufenerWeg.add(feld);
-			}
-			}
-		}
-//		Collections.shuffle(unbekannteFelder);
-//		bot.setzeNaechstesFeld(unbekannteFelder.get(0).getHimmelsrichtung());
-//		System.out.println(bot.bewegeNach());
+		return true;
+			//toDO:: 
 	}
 
 	public int getLaenge() {
