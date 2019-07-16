@@ -1,16 +1,17 @@
 package de.vitbund.vitmaze.players;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Scanner;
 
 public class MortalComBot {
 	
-	private int playerId;
+	private final int playerId;
 	private int currentY;
 	private int currentX;
 	private int[] formulare = new int[100];
-	private Queue<Feld> collNachbarFelder = new LinkedList<Feld>();
+	private Collection<Feld> nachbarFelder;
 	
 	private Feld currentFeld;
 	private Feld northFeld;
@@ -19,16 +20,18 @@ public class MortalComBot {
 	private Feld westFeld;
 	
 	private String lastActionsResult;
+	private String[] letzteHimmelsrichtung;
 	private String currentCellStatus;
 	private String northCellStatus;
 	private String eastCellStatus;
 	private String southCellStatus;
 	private String westCellStatus;
 	private String naechstesFeld;
+
 	
 	public MortalComBot(Scanner input) {
 		// 2. Zeile: Player Infos
-		setPlayerId(input.nextInt()); // id dieses Players / Bots
+		this.playerId =input.nextInt(); // id dieses Players / Bots
 		setCurrentX(input.nextInt());// X-Koordinate der Startposition dieses Player
 		setCurrentY(input.nextInt());// Y-Koordinate der Startposition dieses Players
 		input.nextLine(); // Beenden der zweiten Zeile
@@ -41,77 +44,100 @@ public class MortalComBot {
 	 setEastCellStatus(input.nextLine());
 	 setSouthCellStatus(input.nextLine());
 	 setWestCellStatus(input.nextLine());
-	 erzeugeBenachbarteFelder();
 	 }
 	
-	public void erzeugeBenachbarteFelder() {
-		setNorthFeld(new Feld((getCurrentX()),(getCurrentY()-1),getNorthCellStatus(),"north"));
-		setEastFeld(new Feld((getCurrentX()+1),(getCurrentY()),getEastCellStatus(),"east"));
-		setSouthFeld(new Feld((getCurrentX()),(getCurrentY()+1),getSouthCellStatus(),"south"));
-		setWestFeld(new Feld((getCurrentX()-1),(getCurrentY()),getWestCellStatus(),"west"));
-		fuelleNachbarFelder();
+	public void erzeugeBenachbarteFelder(MazeUnknown maze) {
+		String northKey = getCurrentX()+","+(getCurrentY()-1);
+		String eastKey = (getCurrentX()+1)+","+getCurrentY();
+		String westKey = (getCurrentX()-1)+","+getCurrentY();
+		String southKey = getCurrentX()+","+(getCurrentY()+1);
 		
+		if (maze.getFreieFelder().containsKey(northKey)==true) setNorthFeld(maze.getFreieFelder().get(northKey));
+		else setNorthFeld(new Feld((getCurrentX()),(getCurrentY()-1),getNorthCellStatus(),"north",1,false));
+		if (maze.getFreieFelder().containsKey(eastKey)==true) setEastFeld(maze.getFreieFelder().get(eastKey));
+		else setEastFeld(new Feld((getCurrentX()+1),getCurrentY(),getEastCellStatus(),"east",1,false));
+		if (maze.getFreieFelder().containsKey(southKey)==true)setSouthFeld(maze.getFreieFelder().get(southKey));
+		else setSouthFeld(new Feld((getCurrentX()),(getCurrentY()+1),getSouthCellStatus(),"south",1,false));
+		if (maze.getFreieFelder().containsKey(westKey)==true) setWestFeld(maze.getFreieFelder().get(westKey));
+		else setWestFeld(new Feld((getCurrentX()-1),getCurrentY(),getWestCellStatus(),"west",1,false));
+		fuelleNachbarFelder(maze);
 	}
-	
-	public void fuelleNachbarFelder(){
-		collNachbarFelder.add(getNorthFeld());
-		collNachbarFelder.add(getEastFeld());
-		collNachbarFelder.add(getSouthFeld());
-		collNachbarFelder.add(getWestFeld());
-	}
-	
 
-//	public void loeschecollNachbarFelder() {
-//		collNachbarFelder.remove(getNorthFeld());
-//		collNachbarFelder.remove(getEastFeld());
-//		collNachbarFelder.remove(getSouthFeld());
-//		collNachbarFelder.remove(getWestFeld());
-//	}
-
-	public void setzeBot() {
+	public void setzeBot(MazeUnknown maze) {
 		switch(getLastActionsResult()) {
 			case "OK":
-				setCurrentFeld(new Feld (getCurrentX(),getCurrentY(),getCurrentCellStatus(),""));
-				erzeugeBenachbarteFelder();
+				setCurrentFeld(new Feld (getCurrentX(),getCurrentY(),getCurrentCellStatus(),"",0,true));
+				erzeugeBenachbarteFelder(maze);
 				break;
 			case "OK north":
+				getNorthFeld().setBesucht(true);
+//				northFeld.setWegeKosten((northFeld.getWegeKosten()-1));
 				setCurrentFeld(northFeld);
-				erzeugeBenachbarteFelder();
+				erzeugeBenachbarteFelder(maze);
 				break;
 			case "OK west":
+				getWestFeld().setBesucht(true);
+//				westFeld.setWegeKosten((westFeld.getWegeKosten()-1));
 				setCurrentFeld(westFeld);
-				erzeugeBenachbarteFelder();
+				erzeugeBenachbarteFelder(maze);
 				break;
 			case "OK south":
+				getSouthFeld().setBesucht(true);
+//				southFeld.setWegeKosten((southFeld.getWegeKosten()-1));
 				setCurrentFeld(southFeld);
-				erzeugeBenachbarteFelder();
+				erzeugeBenachbarteFelder(maze);
 				break;
 			case "OK east":
+				getEastFeld().setBesucht(true);
+//				eastFeld.setWegeKosten((eastFeld.getWegeKosten()-1));
 				setCurrentFeld(eastFeld);
-				erzeugeBenachbarteFelder();
+				erzeugeBenachbarteFelder(maze);
 				break;	
 			default: 
 				break;
 		}
 	}
 	
-	public String bewegeBot() {
-		if (getCurrentCellStatus().equals(pruefeSB())) {
-			return "finish";
-		}else return "go "+getNaechstesFeld();	
+	public void fuelleNachbarFelder(MazeUnknown maze){
+		this.nachbarFelder = new ArrayList<Feld>();
+		nachbarFelder.add(northFeld);
+		maze.getFreieFelder().put((getNorthFeld().getSchluessel()),getNorthFeld());
+		nachbarFelder.add(eastFeld);
+		maze.getFreieFelder().put((getEastFeld().getSchluessel()),getEastFeld());
+		nachbarFelder.add(southFeld);
+		maze.getFreieFelder().put((getSouthFeld().getSchluessel()),getSouthFeld());
+		nachbarFelder.add(westFeld);
+		maze.getFreieFelder().put((getWestFeld().getSchluessel()),getWestFeld());
 	}
 	
-	public String pruefeSB() {
+	
+	public boolean sucheSB() {
+		boolean sbFound = false;
+		for (Feld nachbarFeld : getNachbarFelder()) {
+			if (nachbarFeld.getTyp().equals(geheZuSachbearbeiter())) {
+				sbFound = true;
+//				setzeNaechstesFeld(nachbarFeld.getHimmelsrichtung());
+//				System.out.println(bewegeNach());
+				return sbFound;
+			}
+		}
+		return sbFound;
+	}
+	
+	public String geheZuSachbearbeiter() {
 		String ausgabe = "FINISH "+this.getPlayerId()+" 0";
 		return ausgabe;}
+	
 
+	public String bewegeNach() {
+		if(sucheSB()==true) return geheZuSachbearbeiter();
+		else return "go "+getNaechstesFeld();	
+}
 	
 	public int getPlayerId() {
 		return playerId;
 	}
-	public void setPlayerId(int playerId) {
-		this.playerId = playerId;
-	}
+
 	public String getLastActionsResult() {
 		return lastActionsResult;
 	}
@@ -203,10 +229,26 @@ public class MortalComBot {
 	public String getNaechstesFeld() {
 		return naechstesFeld;
 	}
-	public Queue<Feld> getCollNachbarFelder() {
-		return collNachbarFelder;
+	public Collection<Feld> getNachbarFelder() {
+		return nachbarFelder;
 	}
 
+	public void setNaechstesFeld(String naechstesFeld) {
+		this.naechstesFeld = naechstesFeld;
+	}
+
+	public String getLetzteHimmelsrichtung() {
+		letzteHimmelsrichtung = getLastActionsResult().split(" ");
+		return letzteHimmelsrichtung[2];
+	}
+
+//	public void setLetzteHimmelsrichtung(String[] letzteHimmelsrichtung) {
+//		this.letzteHimmelsrichtung = letzteHimmelsrichtung;
+//	}
+//
+//	public void setCollNachbarFelder(Collection<Feld> collNachbarFelder) {
+//		this.collNachbarFelder = collNachbarFelder;
+//	}
 
 	
 	

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Scanner;
 
 public class MazeUnknown {
@@ -13,7 +15,8 @@ public class MazeUnknown {
 	private int breite;
 	private int level;
 	private Collection<Feld> maze = new ArrayList<Feld>();
-	private Map<String,Feld> freieFelder = new HashMap<String,Feld>();
+	private Collection<Feld> moeglicheFelder;
+	private Map<String, Feld> freieFelder = new HashMap<String, Feld>();
 
 	public MazeUnknown(Scanner input) {
 		// INIT - Auslesen der Initialdaten
@@ -28,39 +31,62 @@ public class MazeUnknown {
 	public void fillMaze() {
 		for (int i = 0; i < getBreite(); i++) {
 			for (int j = 0; j < getLaenge(); j++) {
-				Feld k = new Feld(i, j, " ? ", "");
+				Feld k = new Feld(i, j, " ? ", "", 99, false);
 				maze.add(k);
 			}
 		}
 	}
 
-	public void fuegeFreieFelderInListe(MortalComBot bot) {
-		for (Feld feld : bot.getCollNachbarFelder()) {
+	@SuppressWarnings("unlikely-arg-type")
+	public void moeglicheFelder(MortalComBot bot) {
+		this.moeglicheFelder = new LinkedList<Feld>();
+		for (Feld feld : bot.getNachbarFelder()) {
 			if (!("WALL").equals(feld.getTyp())) {
-					freieFelder.put(feld.getSchluessel(),feld);
-			} else if (("FORM").equals(feld.getTyp())) {
-					bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
-				}
-			}
-	}
-
-	public void sucheSB(MortalComBot bot) {
-		for (Feld nachbarFeld : bot.getCollNachbarFelder()) {
-			if (nachbarFeld.getTyp().equals(bot.pruefeSB())) {
-				bot.setzeNaechstesFeld(nachbarFeld.getHimmelsrichtung());
-				bot.bewegeBot();
+				moeglicheFelder.add(feld);
 			} else
-				naechstesFeld(nachbarFeld, bot);
+				feld.setTyp("WALL");
+				freieFelder.put(feld.getSchluessel(),feld);
 		}
 	}
 
-	public void naechstesFeld(Feld nachbarFeld, MortalComBot bot) {
-		List<String> keys = new ArrayList<String>();
-		if (!("WALL").equals(nachbarFeld.getTyp())) {
-			keys.add(nachbarFeld.getSchluessel());
+	public boolean naechstesFeld(MortalComBot bot) {
+		if (moeglicheFelder.size() == 1) {
+			for (Feld feld : moeglicheFelder) {
+				bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
+				return true;	
+			}
+			
+//			System.out.println(bot.bewegeNach());
+			break;
+		
+		List<Integer> minKosten = new ArrayList<Integer>();
+		List<Feld> unbekannteFelder = new ArrayList<Feld>();
+		Queue<Feld> gelaufenerWeg = new LinkedList<Feld>();
+
+//		String[] randomFeld = new String[moeglicheFelder.size()];
+//		int counterRandomFeld = 0;
+
+		for (Feld feld : moeglicheFelder) {
+			minKosten.add(feld.getWegeKosten());
 		}
-		Collections.shuffle(keys);
-		bot.setzeNaechstesFeld(freieFelder.get(keys.get(1)).getHimmelsrichtung());
+
+		for (Feld feld : moeglicheFelder) {
+			System.err.println("Größe: "+moeglicheFelder.size());
+			System.err.println("Feld : " + feld.getHimmelsrichtung() + ";" + feld.isBesucht() + ";"+feld.getSchluessel());
+			
+			}else {
+			if ((feld.isBesucht() == false)) { // && (feld.getWegeKosten()==Collections.min(minKosten))
+				unbekannteFelder.add(feld);
+			}
+			if ((feld.isBesucht() == true)) {
+				System.err.println("Da war ich schon");
+				gelaufenerWeg.add(feld);
+			}
+			}
+		}
+//		Collections.shuffle(unbekannteFelder);
+//		bot.setzeNaechstesFeld(unbekannteFelder.get(0).getHimmelsrichtung());
+//		System.out.println(bot.bewegeNach());
 	}
 
 	public int getLaenge() {
@@ -87,8 +113,20 @@ public class MazeUnknown {
 		this.level = level;
 	}
 
+	public Collection<Feld> getMoeglicheFelder() {
+		return moeglicheFelder;
+	}
+
+	public void setMoeglicheFelder(Collection<Feld> moeglicheFelder) {
+		this.moeglicheFelder = moeglicheFelder;
+	}
+
 	public Map<String, Feld> getFreieFelder() {
 		return freieFelder;
+	}
+
+	public void setFreieFelder(Map<String, Feld> freieFelder) {
+		this.freieFelder = freieFelder;
 	}
 
 }

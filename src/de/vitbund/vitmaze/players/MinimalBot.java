@@ -28,13 +28,18 @@ public class MinimalBot {
 			
 			// Rundeninformationen auslesen
 			bot.felderEinlesen(input);
-			bot.setzeBot();
-			bot.fuelleNachbarFelder();
-			maze.fuegeFreieFelderInListe(bot);
-			maze.sucheSB(bot);
+			bot.setzeBot(maze);
+			bot.fuelleNachbarFelder(maze);
+			maze.moeglicheFelder(bot);
+			do {
+				maze.naechstesFeld(bot);}
+			while (maze.naechstesFeld(bot)==false);
+			
+			System.out.println(bot.bewegeNach());
 	
 			// Debug Information ausgeben (optional möglich)
 			System.err.println("Ergebnis Vorrunde: " + bot.getLastActionsResult());
+			System.err.println("Anzahl freie Felder"+maze.getMoeglicheFelder().size());
 //			System.err.println("current: "+bot.getCurrentFeld().getTyp());
 //			System.err.println("CX: "+bot.getCurrentFeld().getxKoordinate());
 //			System.err.println("CY: "+bot.getCurrentFeld().getyKoordinate());
@@ -50,16 +55,17 @@ public class MinimalBot {
 //			System.err.println("Osten: "+bot.getEastFeld().getTyp());
 //			System.err.println("OX: "+bot.getEastFeld().getxKoordinate());
 //			System.err.println("OY: "+bot.getEastFeld().getyKoordinate());
-			System.err.println("Freie Felder Anzahl: "+maze.getFreieFelder().size());// geht noch besser!!!
-			System.err.println("");
+//			for(Feld feld : bot.getCollNachbarFelder()) {
+//				System.err.println("ID: "+feld.getSchluessel());
+//			}
+//			System.err.println("");
 //			System.err.println("was ist dein SB?: "+bot.pruefeSB());
 //			System.err.println("SB gefunden? :"+bot.getWestCellStatus());
 //			System.err.println("SB gefunden? :"+bot.getEastCellStatus());
 //			System.err.println("SB gefunden? :"+bot.getNorthCellStatus());
 //			System.err.println("SB gefunden? :"+bot.getSouthCellStatus());
 			// Rundenaktion ausgeben
-			System.out.println(bot.bewegeBot());
-			
+			System.out.println(bot.bewegeNach());
 		}
 		
 		// Eingabe schliessen (letzte Aktion)
