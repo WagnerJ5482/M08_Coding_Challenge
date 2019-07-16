@@ -3,7 +3,7 @@ package de.vitbund.vitmaze.players;
 import java.util.Scanner;
 
 /**
- * Klasse eines minimalen Bots für das VITMaze
+ * Klasse eines minimalen Bots fï¿½r das VITMaze
  * @author Patrick.Stalljohann
  * @version 1.0
  *
@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class MinimalBot {
 
 	/**
-	 * Hauptmethode zum Ausführen des Bots
+	 * Hauptmethode zum Ausfï¿½hren des Bots
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -37,9 +37,13 @@ public class MinimalBot {
 			
 //			bot.bewegeNach();
 	
-			// Debug Information ausgeben (optional möglich)
+			// Debug Information ausgeben (optional mï¿½glich)
 			System.err.println("Ergebnis Vorrunde: " + bot.getLastActionsResult());
 			System.err.println("Anzahl freie Felder"+maze.getMoeglicheFelder().size());
+			System.err.println("GrÃ¶ÃŸe freie Felder" + maze.getFreieFelder().size());
+			for(Feld feld : bot.getNachbarFelder()) {
+				System.err.println("Felder drumrum: "+ feld.getSchluessel());
+			}
 //			System.err.println("current: "+bot.getCurrentFeld().getTyp());
 //			System.err.println("CX: "+bot.getCurrentFeld().getxKoordinate());
 //			System.err.println("CY: "+bot.getCurrentFeld().getyKoordinate());

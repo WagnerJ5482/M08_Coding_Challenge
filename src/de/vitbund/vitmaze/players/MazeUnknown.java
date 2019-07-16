@@ -1,13 +1,9 @@
 package de.vitbund.vitmaze.players;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Scanner;
 
 public class MazeUnknown {
@@ -15,7 +11,7 @@ public class MazeUnknown {
 	private int breite;
 	private int level;
 	
-	private Collection<Feld> maze = new ArrayList<Feld>();
+	private Map<String,Feld> maze = new HashMap<String, Feld>();
 	private Collection<Feld> moeglicheFelder;
 	
 	private Map<String, Feld> freieFelder = new HashMap<String, Feld>();
@@ -33,35 +29,48 @@ public class MazeUnknown {
 	public void fillMaze() {
 		for (int i = 0; i < getBreite(); i++) {
 			for (int j = 0; j < getLaenge(); j++) {
-				Feld k = new Feld(i, j, "", "", 99, false);
-				maze.add(k);
+				Feld feld = new Feld(i, j, "", "", 99, false);
+				String key = i+","+j;
+				maze.put(key,feld);
+
 			}
 		}
 	}
 
-	@SuppressWarnings("unlikely-arg-type")
 	public void moeglicheFelder(MortalComBot bot) {
 		this.moeglicheFelder = new LinkedList<Feld>();
 		for (Feld feld : bot.getNachbarFelder()) {
 			if (!("WALL").equals(feld.getTyp())) {
 				moeglicheFelder.add(feld);
-			} else
+			} else {
 				feld.setTyp("WALL");
-				freieFelder.put(feld.getSchluessel(),feld);
+				maze.put(feld.getSchluessel(),feld);
+			}
 		}
 	}
 
-	public boolean naechstesFeld(MortalComBot bot) {
+	public void naechstesFeld(MortalComBot bot) {
 		if (moeglicheFelder.size() == 1) {
 			for (Feld feld : moeglicheFelder) {
 				bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
-				return true;	
+				bot.bewegeNach();
 			}
+		
 		}
-		return true;
+		
+			for (Feld feld : moeglicheFelder) {
+				if(feld.isBesucht() == false) {
+					System.err.println("Feld XY" + feld.getSchluessel());
+					bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
+					bot.bewegeNach();
+			}
+			
+		}
+		
 			//toDO:: 
 	}
 
+	
 	public int getLaenge() {
 		return laenge;
 	}
@@ -100,6 +109,14 @@ public class MazeUnknown {
 
 	public void setFreieFelder(Map<String, Feld> freieFelder) {
 		this.freieFelder = freieFelder;
+	}
+
+	public Map<String, Feld> getMaze() {
+		return maze;
+	}
+
+	public void setMaze(Map<String, Feld> maze) {
+		this.maze = maze;
 	}
 
 }
