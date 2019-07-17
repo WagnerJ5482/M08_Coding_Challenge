@@ -3,7 +3,7 @@ package de.vitbund.vitmaze.players;
 import java.util.Scanner;
 
 /**
- * Klasse eines minimalen Bots für das VITMaze
+ * Klasse eines minimalen Bots fï¿½r das VITMaze
  * @author Patrick.Stalljohann
  * @version 1.0
  *
@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class MinimalBot {
 
 	/**
-	 * Hauptmethode zum Ausführen des Bots
+	 * Hauptmethode zum Ausfï¿½hren des Bots
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -19,22 +19,31 @@ public class MinimalBot {
 		Scanner input = new Scanner(System.in);
 		MazeUnknown maze = new MazeUnknown(input);
 		MortalComBot bot = new MortalComBot(input);
-
+		bot.startFeldEinlesen(maze);
 
 	
 		// TURN (Wiederholung je Runde notwendig)
 		while(input.hasNext()) {
-		
 			
 			// Rundeninformationen auslesen
 			bot.felderEinlesen(input);
-			bot.setzeBot();
-			bot.fuelleNachbarFelder();
-			maze.fuegeFreieFelderInListe(bot);
-			maze.sucheSB(bot);
+			bot.erzeugeBenachbarteFelder(maze);
+			bot.sucheSB();
+			if (bot.sucheSB() == true) {
+				System.out.println(bot.geheZuSachbearbeiter());
+			} else {
+				maze.moeglicheFelder(bot);
+				maze.naechstesFeld(bot);
+				bot.setzeBot(maze);
+				
+			}
+			bot.bewegeNach();
 	
-			// Debug Information ausgeben (optional möglich)
+			// Debug Information ausgeben (optional mï¿½glich)
+			System.err.println("----------------------------------------------------");
 			System.err.println("Ergebnis Vorrunde: " + bot.getLastActionsResult());
+//			System.err.println("Anzahl moegliche Felder"+maze.getMoeglicheFelder().size());
+//			System.err.println("Anzahl freie Felder" + maze.getFreieFelder().size());
 //			System.err.println("current: "+bot.getCurrentFeld().getTyp());
 //			System.err.println("CX: "+bot.getCurrentFeld().getxKoordinate());
 //			System.err.println("CY: "+bot.getCurrentFeld().getyKoordinate());
@@ -50,16 +59,17 @@ public class MinimalBot {
 //			System.err.println("Osten: "+bot.getEastFeld().getTyp());
 //			System.err.println("OX: "+bot.getEastFeld().getxKoordinate());
 //			System.err.println("OY: "+bot.getEastFeld().getyKoordinate());
-			System.err.println("Freie Felder Anzahl: "+maze.getFreieFelder().size());// geht noch besser!!!
-			System.err.println("");
+//			for(Feld feld : bot.getCollNachbarFelder()) {
+//				System.err.println("ID: "+feld.getSchluessel());
+//			}
+//			System.err.println("");
 //			System.err.println("was ist dein SB?: "+bot.pruefeSB());
 //			System.err.println("SB gefunden? :"+bot.getWestCellStatus());
 //			System.err.println("SB gefunden? :"+bot.getEastCellStatus());
 //			System.err.println("SB gefunden? :"+bot.getNorthCellStatus());
 //			System.err.println("SB gefunden? :"+bot.getSouthCellStatus());
 			// Rundenaktion ausgeben
-			System.out.println(bot.bewegeBot());
-			
+//			System.out.println(bot.bewegeNach());
 		}
 		
 		// Eingabe schliessen (letzte Aktion)
