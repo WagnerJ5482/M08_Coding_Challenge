@@ -24,26 +24,24 @@ public class MinimalBot {
 	
 		// TURN (Wiederholung je Runde notwendig)
 		while(input.hasNext()) {
-			if(bot.isSbFound() == true) System.out.println("finish");
-		
 			
 			// Rundeninformationen auslesen
 			bot.felderEinlesen(input);
 			bot.setzeBot(maze);
-			bot.fuelleNachbarFelder(maze);
 			bot.sucheSB();
-			maze.moeglicheFelder(bot);
-			maze.naechstesFeld(bot);
-			
+			if (bot.sucheSB() == true) {
+				System.out.println(bot.geheZuSachbearbeiter());
+			} else {
+				maze.moeglicheFelder(bot);
+				maze.naechstesFeld(bot);
+			}
 //			bot.bewegeNach();
 	
 			// Debug Information ausgeben (optional m�glich)
+			System.err.println("----------------------------------------------------");
 			System.err.println("Ergebnis Vorrunde: " + bot.getLastActionsResult());
-			System.err.println("Anzahl moegliche Felder"+maze.getMoeglicheFelder().size());
-			System.err.println("Anzahl freie Felder" + maze.getFreieFelder().size());
-			for(Feld feld : bot.getNachbarFelder()) {
-				System.err.println("Felder drumrum: "+ feld.getSchluessel());
-			}
+//			System.err.println("Anzahl moegliche Felder"+maze.getMoeglicheFelder().size());
+//			System.err.println("Anzahl freie Felder" + maze.getFreieFelder().size());
 //			System.err.println("current: "+bot.getCurrentFeld().getTyp());
 //			System.err.println("CX: "+bot.getCurrentFeld().getxKoordinate());
 //			System.err.println("CY: "+bot.getCurrentFeld().getyKoordinate());
