@@ -21,19 +21,19 @@ public class MortalComBot {
 	private Feld westFeld;
 
 	private String lastActionsResult;
-	private String[] letzteHimmelsrichtung;
+	//private String[] letzteHimmelsrichtung;
 	private String currentCellStatus;
 	private String northCellStatus;
 	private String eastCellStatus;
 	private String southCellStatus;
 	private String westCellStatus;
-	private String naechstesFeld = "north";
+	private String naechstesFeld;
 	private String currentKey;
 
-	String northKey = getCurrentX() + "," + (getCurrentY() - 1);
-	String eastKey = (getCurrentX() + 1) + "," + getCurrentY();
-	String westKey = (getCurrentX() - 1) + "," + getCurrentY();
-	String southKey = getCurrentX() + "," + (getCurrentY() + 1);
+	private String northKey;
+	private String eastKey;
+	private String westKey;
+	private String southKey;
 
 	public MortalComBot(Scanner input) {
 		// 2. Zeile: Player Infos
@@ -41,7 +41,7 @@ public class MortalComBot {
 		setCurrentX(input.nextInt());// X-Koordinate der Startposition dieses Player
 		setCurrentY(input.nextInt());// Y-Koordinate der Startposition dieses Players
 		input.nextLine(); // Beenden der zweiten Zeile
-		String currentKey = getCurrentX() + "," + getCurrentY();
+		System.err.println(getCurrentKey());
 	}
 
 	public void felderEinlesen(Scanner input) {
@@ -55,12 +55,31 @@ public class MortalComBot {
 	}
 
 	public void erzeugeBenachbarteFelder(MazeUnknown maze) {
+		System.err.println(getCurrentKey());
 
-		setNorthFeld(maze.getMaze().get(northKey));
-		setEastFeld(maze.getMaze().get(eastKey));
-		setSouthFeld(maze.getMaze().get(southKey));
-		setWestFeld(maze.getMaze().get(westKey));
-		System.err.println(northKey+" ; "+eastKey+" ; "+southKey+" ; "+westKey+" ; "+currentKey);
+		setNorthFeld(maze.getMaze().get(getNorthKey()));
+		this.northFeld.setTyp(getNorthCellStatus());
+		this.northFeld.setHimmelsrichtung("north");
+		this.northFeld.setKoordinaten(getNorthKey());
+		maze.getMaze().put(getNorthFeld().getSchluessel(), getNorthFeld());
+
+		setEastFeld(maze.getMaze().get(getEastKey()));
+		this.eastFeld.setTyp(getEastCellStatus());
+		this.eastFeld.setHimmelsrichtung("east");
+		this.eastFeld.setKoordinaten(getEastKey());
+		maze.getMaze().put(getEastFeld().getSchluessel(), getEastFeld());
+
+		setSouthFeld(maze.getMaze().get(getSouthKey()));
+		this.southFeld.setTyp(getSouthCellStatus());
+		this.southFeld.setHimmelsrichtung("south");
+		this.southFeld.setKoordinaten(getSouthKey());
+		maze.getMaze().put(getSouthFeld().getSchluessel(), getSouthFeld());
+
+		setWestFeld(maze.getMaze().get(getWestKey()));
+		this.westFeld.setTyp(getWestCellStatus());
+		this.westFeld.setHimmelsrichtung("west");
+		this.westFeld.setHimmelsrichtung(getWestKey());
+		maze.getMaze().put(getWestFeld().getSchluessel(), getWestFeld());
 
 //		if (maze.getFreieFelder().containsKey(northKey)==true) setNorthFeld(maze.getFreieFelder().get(northKey));
 //		else setNorthFeld(new Feld((getCurrentX()),(getCurrentY()-1),getNorthCellStatus(),"north",1,false));
@@ -80,15 +99,16 @@ public class MortalComBot {
 	public void setzeBot(MazeUnknown maze) {
 		switch (getLastActionsResult()) {
 		case "OK":
-			setCurrentFeld(maze.getMaze().get(currentKey));
+			setCurrentFeld(maze.getMaze().get(getCurrentKey()));
+			getCurrentFeld().setTyp(currentCellStatus);
+			getCurrentFeld().setKoordinaten(getCurrentKey());
+			maze.getMaze().put(getCurrentKey(), getCurrentFeld());
 			erzeugeBenachbarteFelder(maze);
 			break;
 		case "OK NORTH":
-//				setCurrentX(southFeld.getxKoordinate());
-//				setCurrentY(southFeld.getyKoordinate());
 			getSouthFeld().setBesucht(true);
 //				northFeld.setWegeKosten((northFeld.getWegeKosten()-1));
-//				setCurrentFeld(northFeld);
+			maze.getMaze().put(getSouthFeld().getSchluessel(), getSouthFeld());
 			erzeugeBenachbarteFelder(maze);
 			break;
 		case "OK WEST":
@@ -97,6 +117,7 @@ public class MortalComBot {
 			getEastFeld().setBesucht(true);
 //				westFeld.setWegeKosten((westFeld.getWegeKosten()-1));
 //				setCurrentFeld(westFeld);
+			maze.getMaze().put(getEastFeld().getSchluessel(), getEastFeld());
 			erzeugeBenachbarteFelder(maze);
 			break;
 		case "OK SOUTH":
@@ -105,6 +126,7 @@ public class MortalComBot {
 			getNorthFeld().setBesucht(true);
 //				southFeld.setWegeKosten((southFeld.getWegeKosten()-1));
 //				setCurrentFeld(southFeld);
+			maze.getMaze().put(getNorthFeld().getSchluessel(), getNorthFeld());
 			erzeugeBenachbarteFelder(maze);
 			break;
 		case "OK EAST":
@@ -113,6 +135,7 @@ public class MortalComBot {
 			getWestFeld().setBesucht(true);
 //				eastFeld.setWegeKosten((eastFeld.getWegeKosten()-1));
 //				setCurrentFeld(westFeld);
+			maze.getMaze().put(getWestFeld().getSchluessel(), getWestFeld());
 			erzeugeBenachbarteFelder(maze);
 			break;
 		default:
@@ -122,10 +145,10 @@ public class MortalComBot {
 
 	public void fuelleNachbarFelder(MazeUnknown maze) {
 		this.nachbarFelder = new ArrayList<Feld>();
-		nachbarFelder.add(northFeld);
-		nachbarFelder.add(eastFeld);
-		nachbarFelder.add(southFeld);
-		nachbarFelder.add(westFeld);
+		nachbarFelder.add(getNorthFeld());
+		nachbarFelder.add(getEastFeld());
+		nachbarFelder.add(getSouthFeld());
+		nachbarFelder.add(getWestFeld());
 	}
 
 	public boolean sucheSB() {
@@ -149,19 +172,25 @@ public class MortalComBot {
 		} else {
 			switch (getNaechstesFeld()) {
 			case "north":
-				setCurrentFeld(northFeld);
+				setCurrentFeld(getNorthFeld());
+//				System.out.println("go " + getNaechstesFeld());
 				break;
 			case "east":
-				setCurrentFeld(eastFeld);
+				setCurrentFeld(getEastFeld());
+//				System.out.println("go " + getNaechstesFeld());
 				break;
 			case "south":
-				setCurrentFeld(southFeld);
+				setCurrentFeld(getSouthFeld());
+//				System.out.println("go " + getNaechstesFeld());
 				break;
 			case "west":
-				setCurrentFeld(westFeld);
+				setCurrentFeld(getWestFeld());
+//				System.out.println("go " + getNaechstesFeld());
 				break;
+			default:
+				System.out.println("go " + getNaechstesFeld());
 			}
-			System.out.println("go " + getNaechstesFeld());
+			System.out.println("go "+ getNaechstesFeld());
 		}
 	}
 
@@ -239,6 +268,8 @@ public class MortalComBot {
 
 	public void setCurrentFeld(Feld currentFeld) {
 		this.currentFeld = currentFeld;
+		this.currentX = currentFeld.getxKoordinate();
+		this.currentY = currentFeld.getyKoordinate();
 	}
 
 	public Feld getNorthFeld() {
@@ -297,17 +328,17 @@ public class MortalComBot {
 		this.naechstesFeld = naechstesFeld;
 	}
 
-	public String getLetzteHimmelsrichtung() {
-		letzteHimmelsrichtung = getLastActionsResult().split(" ");
-		return letzteHimmelsrichtung[2];
-	}
+//	public String getLetzteHimmelsrichtung() {
+//		letzteHimmelsrichtung = getLastActionsResult().split(" ");
+//		return letzteHimmelsrichtung[2];
+//	}
 
 	public boolean isSbFound() {
 		return sbFound;
 	}
 
 	public String getCurrentKey() {
-		return currentKey;
+		return getCurrentX() + "," + getCurrentY();
 	}
 
 	public void setCurrentKey(String currentKey) {
@@ -315,7 +346,7 @@ public class MortalComBot {
 	}
 
 	public String getNorthKey() {
-		return northKey;
+		return getCurrentX() + "," + (getCurrentY() - 1);
 	}
 
 	public void setNorthKey(String northKey) {
@@ -323,7 +354,7 @@ public class MortalComBot {
 	}
 
 	public String getEastKey() {
-		return eastKey;
+		return (getCurrentX() + 1) + "," + getCurrentY();
 	}
 
 	public void setEastKey(String eastKey) {
@@ -331,7 +362,7 @@ public class MortalComBot {
 	}
 
 	public String getWestKey() {
-		return westKey;
+		return (getCurrentX() - 1) + "," + getCurrentY();
 	}
 
 	public void setWestKey(String westKey) {
@@ -339,7 +370,7 @@ public class MortalComBot {
 	}
 
 	public String getSouthKey() {
-		return southKey;
+		return getCurrentX() + "," + (getCurrentY() + 1);
 	}
 
 	public void setSouthKey(String southKey) {

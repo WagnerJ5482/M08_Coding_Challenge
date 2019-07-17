@@ -41,7 +41,7 @@ public class MazeUnknown {
 		this.moeglicheFelder = new LinkedList<Feld>();
 		for (Feld feld : bot.getNachbarFelder()) {
 			if (!("WALL").equals(feld.getTyp())) {
-				moeglicheFelder.add(feld);
+				this.moeglicheFelder.add(maze.get(feld.getSchluessel()));
 			} else {
 				feld.setTyp("WALL");
 				maze.put(feld.getSchluessel(),feld);
@@ -50,14 +50,14 @@ public class MazeUnknown {
 	}
 
 	public void naechstesFeld(MortalComBot bot) {
-		if (moeglicheFelder.size() == 1) {
-			for (Feld feld : moeglicheFelder) {
+		if (this.moeglicheFelder.size() == 1) {
+			for (Feld feld : this.moeglicheFelder) {
+				System.err.println(feld.getHimmelsrichtung());
 				bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
 				bot.bewegeNach();
 			}
 		
 		}
-		
 			for (Feld feld : moeglicheFelder) {
 				if(feld.isBesucht() == false) {
 					System.err.println("Feld XY" + feld.getSchluessel());

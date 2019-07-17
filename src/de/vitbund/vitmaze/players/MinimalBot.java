@@ -39,8 +39,8 @@ public class MinimalBot {
 	
 			// Debug Information ausgeben (optional m�glich)
 			System.err.println("Ergebnis Vorrunde: " + bot.getLastActionsResult());
-			System.err.println("Anzahl freie Felder"+maze.getMoeglicheFelder().size());
-			System.err.println("Größe freie Felder" + maze.getFreieFelder().size());
+			System.err.println("Anzahl moegliche Felder"+maze.getMoeglicheFelder().size());
+			System.err.println("Anzahl freie Felder" + maze.getFreieFelder().size());
 			for(Feld feld : bot.getNachbarFelder()) {
 				System.err.println("Felder drumrum: "+ feld.getSchluessel());
 			}

@@ -25,7 +25,12 @@ public class Feld {
 		setBesucht(besucht);
 		setHimmelsrichtung(himmelsrichtung);
 	}
-
+	
+	public void setKoordinaten(String schluessel) {
+		String[] key = schluessel.split(",");
+		setxKoordinate(Integer.parseInt(key[0]));
+		setyKoordinate(Integer.parseInt(key[1]));
+	}
 
 
 	public int getxKoordinate() {
