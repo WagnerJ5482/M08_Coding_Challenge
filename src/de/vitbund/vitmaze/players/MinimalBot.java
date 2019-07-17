@@ -19,7 +19,7 @@ public class MinimalBot {
 		Scanner input = new Scanner(System.in);
 		MazeUnknown maze = new MazeUnknown(input);
 		MortalComBot bot = new MortalComBot(input);
-
+		bot.startFeldEinlesen(maze);
 
 	
 		// TURN (Wiederholung je Runde notwendig)
@@ -27,15 +27,17 @@ public class MinimalBot {
 			
 			// Rundeninformationen auslesen
 			bot.felderEinlesen(input);
-			bot.setzeBot(maze);
+			bot.erzeugeBenachbarteFelder(maze);
 			bot.sucheSB();
 			if (bot.sucheSB() == true) {
 				System.out.println(bot.geheZuSachbearbeiter());
 			} else {
 				maze.moeglicheFelder(bot);
 				maze.naechstesFeld(bot);
+				bot.setzeBot(maze);
+				
 			}
-//			bot.bewegeNach();
+			bot.bewegeNach();
 	
 			// Debug Information ausgeben (optional m�glich)
 			System.err.println("----------------------------------------------------");

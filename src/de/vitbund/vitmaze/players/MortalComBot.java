@@ -39,6 +39,15 @@ public class MortalComBot {
 		setCurrentY(input.nextInt());// Y-Koordinate der Startposition dieses Players
 		input.nextLine(); // Beenden der zweiten Zeile
 	}
+	
+	public void startFeldEinlesen(MazeUnknown maze) {
+		this.currentFeld =maze.getMaze().get(getCurrentKey());
+		this.currentFeld.setTyp(getCurrentCellStatus());
+		this.currentFeld.setHimmelsrichtung("middle");
+		this.currentFeld.setBesucht(true);
+		this.currentFeld.setKoordinaten(getCurrentKey());
+		maze.getMaze().put(getCurrentFeld().getSchluessel(), getCurrentFeld());
+	}
 
 	public void felderEinlesen(Scanner input) {
 
@@ -83,13 +92,17 @@ public class MortalComBot {
 		switch (getLastActionsResult()) {
 		case "OK": lastActionOK(maze);
 			break;
-		case "OK NORTH": lastActionNorth(maze);
+		case "OK NORTH":
+			getSouthFeld().setBesucht(true);
 			break;
-		case "OK WEST": lastActionWest(maze);
+		case "OK WEST": 
+			getEastFeld().setBesucht(true);
 			break;
-		case "OK SOUTH": lastActionSouth(maze);
+		case "OK SOUTH": 
+			getNorthFeld().setBesucht(true);
 			break;
-		case "OK EAST": lastActionEast(maze);
+		case "OK EAST":
+			getWestFeld().setBesucht(true);
 			break;
 		default:
 			break;
@@ -97,48 +110,43 @@ public class MortalComBot {
 	}
 	
 	private void lastActionOK(MazeUnknown maze) {
-		setCurrentFeld(maze.getMaze().get(getCurrentKey()));
-		this.currentFeld.setBesucht(true);
-		getCurrentFeld().setTyp(currentCellStatus);
-		getCurrentFeld().setKoordinaten(getCurrentKey());
-		maze.getMaze().put(getCurrentKey(), getCurrentFeld());
-		System.err.println("Start: x;y:"+getCurrentKey());
+//		setCurrentFeld(maze.getMaze().get(getCurrentKey()));
+//		getCurrentFeld().setTyp(currentCellStatus);
+//		getCurrentFeld().setKoordinaten(getCurrentKey());
+//		maze.getMaze().put(getCurrentKey(), getCurrentFeld());
+//		System.err.println("Start: x;y:"+getCurrentKey());
 		erzeugeBenachbarteFelder(maze);
 	}
 	
 	private void lastActionNorth(MazeUnknown maze) {
-		this.southFeld.setBesucht(true);
-		maze.getMaze().put(getSouthFeld().getSchluessel(), getSouthFeld());
-		//setCurrentFeld(maze.getMaze().get(getSouthKey()));
+		
+//		maze.getMaze().put(getSouthFeld().getSchluessel(), getSouthFeld());
+//		setCurrentFeld(maze.getMaze().get(getSouthKey()));
 		System.err.println("x;y:"+getCurrentKey());
-		erzeugeBenachbarteFelder(maze);
 	}
 	
 	private void lastActionSouth(MazeUnknown maze) {
-		getNorthFeld().setBesucht(true);
+		
 //		southFeld.setWegeKosten((southFeld.getWegeKosten()-1));
-		maze.getMaze().put(getNorthFeld().getSchluessel(), getNorthFeld());
-		//setCurrentFeld(maze.getMaze().get(getNorthKey()));
+//		maze.getMaze().put(getNorthFeld().getSchluessel(), getNorthFeld());
+//		setCurrentFeld(maze.getMaze().get(getNorthKey()));
 		System.err.println("x;y:"+getCurrentKey());
-		erzeugeBenachbarteFelder(maze);
 	}
 	
 	private void lastActionWest(MazeUnknown maze) {
-		getEastFeld().setBesucht(true);
+		
 //		westFeld.setWegeKosten((westFeld.getWegeKosten()-1));
-		maze.getMaze().put(getEastFeld().getSchluessel(), getEastFeld());
-		//setCurrentFeld(maze.getMaze().get(getEastKey()));
+//		maze.getMaze().put(getEastFeld().getSchluessel(), getEastFeld());
+//		setCurrentFeld(maze.getMaze().get(getEastKey()));
 		System.err.println("x;y:"+getCurrentKey());
-		erzeugeBenachbarteFelder(maze);
 	}
 	
 	private void lastActionEast(MazeUnknown maze) {
-		getWestFeld().setBesucht(true);
+		
 //		eastFeld.setWegeKosten((eastFeld.getWegeKosten()-1));
-		maze.getMaze().put(getWestFeld().getSchluessel(), getWestFeld());
-		//setCurrentFeld(maze.getMaze().get(getWestKey()));
+//		maze.getMaze().put(getWestFeld().getSchluessel(), getWestFeld());
+//		setCurrentFeld(maze.getMaze().get(getWestKey()));
 		System.err.println("x;y:"+getCurrentKey());
-		erzeugeBenachbarteFelder(maze);
 	}
 
 	public void fuelleNachbarFelder() {

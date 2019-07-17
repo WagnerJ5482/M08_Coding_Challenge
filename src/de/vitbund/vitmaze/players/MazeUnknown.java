@@ -57,7 +57,7 @@ public class MazeUnknown {
 			for (Feld feld : moeglicheFelder) {
 				System.err.println(feld.getHimmelsrichtung());
 				bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
-				bot.bewegeNach();
+//				bot.bewegeNach();
 				return true;
 			}
 
@@ -66,7 +66,7 @@ public class MazeUnknown {
 				if (feld.isBesucht() == false) {
 					System.err.println("Feld XY" + feld.getSchluessel());
 					bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
-					bot.bewegeNach();
+//					bot.bewegeNach();
 				}
 			}
 		} return false;
