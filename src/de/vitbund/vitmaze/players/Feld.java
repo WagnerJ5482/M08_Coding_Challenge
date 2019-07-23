@@ -6,6 +6,7 @@ public class Feld {
 	private String typ;
 	private String himmelsrichtung;
 	private boolean besucht;
+	private int anzahlBesuche;
 	private int wegeKosten;
 	/*
 	 * Standard Konstruktor;
@@ -17,19 +18,24 @@ public class Feld {
 	/*
 	 * Konstruktor zum generieren eines Level - Feldes
 	 */
-	public Feld (int x, int y, String typ, String himmelsrichtung, int wegeKosten, boolean besucht) {
+	public Feld (int x, int y, String typ, String himmelsrichtung, int wegeKosten, boolean besucht, int anzahlBesuche) {
 		setxKoordinate(x);
 		setyKoordinate(y);
 		setTyp(typ);
 		setWegeKosten(wegeKosten);
 		setBesucht(besucht);
 		setHimmelsrichtung(himmelsrichtung);
+		setAnzahlBesuche(anzahlBesuche);
 	}
 	
 	public void setKoordinaten(String schluessel) {
 		String[] key = schluessel.split(",");
 		setxKoordinate(Integer.parseInt(key[0]));
 		setyKoordinate(Integer.parseInt(key[1]));
+	}
+	
+	public void anzahlBesucheErhoeen(int zahl) {
+		this.anzahlBesuche += zahl;
 	}
 
 
@@ -83,6 +89,14 @@ public class Feld {
 
 	public void setWegeKosten(int wegeKosten) {
 		this.wegeKosten = wegeKosten;
+	}
+
+	public int getAnzahlBesuche() {
+		return anzahlBesuche;
+	}
+
+	public void setAnzahlBesuche(int anzahlBesuche) {
+		this.anzahlBesuche = anzahlBesuche;
 	}
 
 }

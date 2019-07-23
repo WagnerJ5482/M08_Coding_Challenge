@@ -42,9 +42,10 @@ public class MortalComBot {
 	
 	public void startFeldEinlesen(MazeUnknown maze) {
 		this.currentFeld =maze.getMaze().get(getCurrentKey());
-		this.currentFeld.setTyp(getCurrentCellStatus());
+		this.currentFeld.setTyp("FLOOR");
 		this.currentFeld.setHimmelsrichtung("middle");
 		this.currentFeld.setBesucht(true);
+		this.currentFeld.anzahlBesucheErhoeen(1);
 		this.currentFeld.setKoordinaten(getCurrentKey());
 		maze.getMaze().put(getCurrentFeld().getSchluessel(), getCurrentFeld());
 	}
@@ -90,63 +91,28 @@ public class MortalComBot {
 
 	public void setzeBot(MazeUnknown maze) {
 		switch (getLastActionsResult()) {
-		case "OK": lastActionOK(maze);
+		case "OK": 
+			erzeugeBenachbarteFelder(maze);
 			break;
 		case "OK NORTH":
 			getSouthFeld().setBesucht(true);
+			getSouthFeld().anzahlBesucheErhoeen(1);
 			break;
 		case "OK WEST": 
 			getEastFeld().setBesucht(true);
+			getEastFeld().anzahlBesucheErhoeen(1);
 			break;
 		case "OK SOUTH": 
 			getNorthFeld().setBesucht(true);
+			getNorthFeld().anzahlBesucheErhoeen(1);
 			break;
 		case "OK EAST":
 			getWestFeld().setBesucht(true);
+			getWestFeld().anzahlBesucheErhoeen(1);
 			break;
 		default:
 			break;
 		}
-	}
-	
-	private void lastActionOK(MazeUnknown maze) {
-//		setCurrentFeld(maze.getMaze().get(getCurrentKey()));
-//		getCurrentFeld().setTyp(currentCellStatus);
-//		getCurrentFeld().setKoordinaten(getCurrentKey());
-//		maze.getMaze().put(getCurrentKey(), getCurrentFeld());
-//		System.err.println("Start: x;y:"+getCurrentKey());
-		erzeugeBenachbarteFelder(maze);
-	}
-	
-	private void lastActionNorth(MazeUnknown maze) {
-		
-//		maze.getMaze().put(getSouthFeld().getSchluessel(), getSouthFeld());
-//		setCurrentFeld(maze.getMaze().get(getSouthKey()));
-		System.err.println("x;y:"+getCurrentKey());
-	}
-	
-	private void lastActionSouth(MazeUnknown maze) {
-		
-//		southFeld.setWegeKosten((southFeld.getWegeKosten()-1));
-//		maze.getMaze().put(getNorthFeld().getSchluessel(), getNorthFeld());
-//		setCurrentFeld(maze.getMaze().get(getNorthKey()));
-		System.err.println("x;y:"+getCurrentKey());
-	}
-	
-	private void lastActionWest(MazeUnknown maze) {
-		
-//		westFeld.setWegeKosten((westFeld.getWegeKosten()-1));
-//		maze.getMaze().put(getEastFeld().getSchluessel(), getEastFeld());
-//		setCurrentFeld(maze.getMaze().get(getEastKey()));
-		System.err.println("x;y:"+getCurrentKey());
-	}
-	
-	private void lastActionEast(MazeUnknown maze) {
-		
-//		eastFeld.setWegeKosten((eastFeld.getWegeKosten()-1));
-//		maze.getMaze().put(getWestFeld().getSchluessel(), getWestFeld());
-//		setCurrentFeld(maze.getMaze().get(getWestKey()));
-		System.err.println("x;y:"+getCurrentKey());
 	}
 
 	public void fuelleNachbarFelder() {
@@ -176,22 +142,18 @@ public class MortalComBot {
 			case "north":
 				setCurrentX(getNorthFeld().getxKoordinate());
 				setCurrentY(getNorthFeld().getyKoordinate());
-//				System.out.println("go " + getNaechstesFeld());
 				break;
 			case "east":
 				setCurrentX(getEastFeld().getxKoordinate());
 				setCurrentY(getEastFeld().getyKoordinate());
-//				System.out.println("go " + getNaechstesFeld());
 				break;
 			case "south":
 				setCurrentX(getSouthFeld().getxKoordinate());
 				setCurrentY(getSouthFeld().getyKoordinate());
-//				System.out.println("go " + getNaechstesFeld());
 				break;
 			case "west":
 				setCurrentX(getWestFeld().getxKoordinate());
 				setCurrentY(getWestFeld().getyKoordinate());
-//				System.out.println("go " + getNaechstesFeld());
 				break;
 			default:
 			}
@@ -330,11 +292,6 @@ public class MortalComBot {
 		this.naechstesFeld = naechstesFeld;
 	}
 
-//	public String getLetzteHimmelsrichtung() {
-//		letzteHimmelsrichtung = getLastActionsResult().split(" ");
-//		return letzteHimmelsrichtung[2];
-//	}
-
 	public boolean isSbFound() {
 		return sbFound;
 	}
@@ -378,13 +335,5 @@ public class MortalComBot {
 	public void setSouthKey(String southKey) {
 		this.southKey = southKey;
 	}
-
-//	public void setLetzteHimmelsrichtung(String[] letzteHimmelsrichtung) {
-//		this.letzteHimmelsrichtung = letzteHimmelsrichtung;
-//	}
-//
-//	public void setCollNachbarFelder(Collection<Feld> collNachbarFelder) {
-//		this.collNachbarFelder = collNachbarFelder;
-//	}
 
 }

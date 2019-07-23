@@ -2,8 +2,9 @@ package de.vitbund.vitmaze.players;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -11,6 +12,7 @@ public class MazeUnknown {
 	private int laenge;
 	private int breite;
 	private int level;
+	private List<Integer> anzahlBesuche;
 
 	private Map<String, Feld> maze = new HashMap<String, Feld>();
 	private Collection<Feld> moeglicheFelder;
@@ -30,7 +32,7 @@ public class MazeUnknown {
 	public void fillMaze() {
 		for (int i = 0; i < getBreite(); i++) {
 			for (int j = 0; j < getLaenge(); j++) {
-				Feld feld = new Feld(i, j, "", "", 99, false);
+				Feld feld = new Feld(i, j, "", "", 99, false,0);
 				String key = i + "," + j;
 				maze.put(key, feld);
 
@@ -41,7 +43,6 @@ public class MazeUnknown {
 	public void moeglicheFelder(MortalComBot bot) {
 		this.moeglicheFelder = new ArrayList<Feld>();
 		for (Feld feld : bot.getNachbarFelder()) {
-			System.err.println("besucht: "+feld.getSchluessel()+feld.isBesucht());
 			if (!("WALL").equals(feld.getTyp())) {
 				moeglicheFelder.add(maze.get(feld.getSchluessel()));
 			} else {
@@ -52,24 +53,31 @@ public class MazeUnknown {
 		}
 	}
 
-	public boolean naechstesFeld(MortalComBot bot) {
+	public void naechstesFeld(MortalComBot bot) {
 		if (moeglicheFelder.size() == 1) {
 			for (Feld feld : moeglicheFelder) {
-				System.err.println(feld.getHimmelsrichtung());
 				bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
-//				bot.bewegeNach();
-				return true;
+				return;
 			}
-
-		} else {
-			for (Feld feld : moeglicheFelder) {
-				if (feld.isBesucht() == false) {
-					System.err.println("Feld XY" + feld.getSchluessel());
-					bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
-//					bot.bewegeNach();
+		} 
+		
+		this.anzahlBesuche = new ArrayList<Integer>();
+		for (Feld feld:moeglicheFelder) {
+			anzahlBesuche.add(feld.getAnzahlBesuche());
+		}
+		
+		for (Feld feld : moeglicheFelder) {
+			if (feld.isBesucht() == false) {
+				bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
+				return;
 				}
+			else if (feld.getAnzahlBesuche() <= Collections.min(anzahlBesuche)){
+				bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
+				return;
 			}
-		} return false;
+			
+			}
+		return;
 		// toDO::
 	}
 

@@ -28,19 +28,18 @@ public class MinimalBot {
 			// Rundeninformationen auslesen
 			bot.felderEinlesen(input);
 			bot.erzeugeBenachbarteFelder(maze);
-			bot.sucheSB();
+			bot.setzeBot(maze);
 			if (bot.sucheSB() == true) {
+				bot.bewegeNach();
 				System.out.println(bot.geheZuSachbearbeiter());
 			} else {
 				maze.moeglicheFelder(bot);
 				maze.naechstesFeld(bot);
-				bot.setzeBot(maze);
-				
+				bot.bewegeNach();
 			}
-			bot.bewegeNach();
+			
 	
 			// Debug Information ausgeben (optional m�glich)
-			System.err.println("----------------------------------------------------");
 			System.err.println("Ergebnis Vorrunde: " + bot.getLastActionsResult());
 //			System.err.println("Anzahl moegliche Felder"+maze.getMoeglicheFelder().size());
 //			System.err.println("Anzahl freie Felder" + maze.getFreieFelder().size());
