@@ -13,7 +13,7 @@ public class MazeUnknown {
 	private int breite;
 	private int level;
 	private List<Integer> anzahlBesuche;
-	private Dokument dokument;
+	private Formular formular;
 
 	private Map<String, Feld> maze = new HashMap<String, Feld>();
 	private Collection<Feld> moeglicheFelder;
@@ -51,6 +51,11 @@ public class MazeUnknown {
 		for (Feld feld : bot.getNachbarFelder()) {
 			if (!("WALL").equals(feld.getTyp())) {
 				moeglicheFelder.add(maze.get(feld.getSchluessel()));
+				if(feld.getTyp().contains("FORM " +bot.getPlayerId()+" ")) {
+					String[] nrVomDokumen	= feld.getTyp().split(" "); 
+					setDokument(new Formular(Integer.parseInt(nrVomDokumen[2]),feld));
+					bot.getAnzahlDokumente().add(getDokument());
+				}
 			} else {
 				feld.setHimmelsrichtung("");
 				feld.setTyp("WALL");
@@ -63,10 +68,6 @@ public class MazeUnknown {
 		if (moeglicheFelder.size() == 1) {
 			for (Feld feld : moeglicheFelder) {
 				bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
-				if(feld.getTyp().contains("FORM " +bot.getPlayerId()+" ")) {
-					String[] nrVomDokumen	= feld.getTyp().split(" "); 
-					setDokument(new Dokument(Integer.parseInt(nrVomDokumen[2]),feld));
-				}
 				return;
 			}
 		} 
@@ -139,12 +140,12 @@ public class MazeUnknown {
 		this.maze = maze;
 	}
 
-	public Dokument getDokument() {
-		return dokument;
+	public Formular getDokument() {
+		return formular;
 	}
 
-	public void setDokument(Dokument dokument) {
-		this.dokument = dokument;
+	public void setDokument(Formular formular) {
+		this.formular = formular;
 	}
 
 }

@@ -1,5 +1,7 @@
 package de.vitbund.vitmaze.players;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class MortalComBot {
@@ -8,7 +10,7 @@ public class MortalComBot {
 	private boolean sbFound = false;
 	private int currentY;
 	private int currentX;
-	private int[] formulare = new int[100];
+	private List<Formular> anzahlDokumente = new ArrayList<Formular>();
 	private Feld[] nachbarFelder = new Feld[4];
 
 	private Feld currentFeld;
@@ -26,7 +28,6 @@ public class MortalComBot {
 	private String westCellStatus;
 	private String naechstesFeld;
 	private String currentKey;
-	private int anzahlDokumente;
 
 	private String northKey;
 	private String eastKey;
@@ -39,7 +40,6 @@ public class MortalComBot {
 		setCurrentX(input.nextInt());// X-Koordinate der Startposition dieses Player
 		setCurrentY(input.nextInt());// Y-Koordinate der Startposition dieses Players
 		input.nextLine(); // Beenden der zweiten Zeile
-		setAnzahlDokumente(0);
 	}
 	
 	public void startFeldEinlesen(MazeUnknown maze) {
@@ -270,14 +270,6 @@ public class MortalComBot {
 		this.westFeld = westFeld;
 	}
 
-	public int[] getFormulare() {
-		return formulare;
-	}
-
-	public void setFormulare(int[] formulare) {
-		this.formulare = formulare;
-	}
-
 	public void setzeNaechstesFeld(String himmelsrichtung) {
 		this.naechstesFeld = himmelsrichtung;
 	}
@@ -338,11 +330,11 @@ public class MortalComBot {
 		this.southKey = southKey;
 	}
 
-	public int getAnzahlDokumente() {
+	public List<Formular> getAnzahlDokumente() {
 		return anzahlDokumente;
 	}
 
-	public void setAnzahlDokumente(int anzahlDokumente) {
+	public void setAnzahlDokumente(List<Formular> anzahlDokumente) {
 		this.anzahlDokumente = anzahlDokumente;
 	}
 

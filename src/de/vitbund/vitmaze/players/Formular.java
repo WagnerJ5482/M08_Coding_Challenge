@@ -1,6 +1,6 @@
 package de.vitbund.vitmaze.players;
 
-public class Dokument {
+public class Formular {
 	private int dokumentNummer;
 	private Feld feld;
 
@@ -9,7 +9,7 @@ public class Dokument {
 	 * @param dokumentNummer
 	 * @param feld
 	 */
-	public Dokument(int dokumentNummer, Feld feld) {
+	public Formular(int dokumentNummer, Feld feld) {
 		setDokumentNummer(dokumentNummer);// welche Nummer hat das Dokument;
 		setFeld(feld); // wo liegt ein Dokument
 	}
