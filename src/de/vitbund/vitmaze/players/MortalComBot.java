@@ -26,6 +26,7 @@ public class MortalComBot {
 	private String westCellStatus;
 	private String naechstesFeld;
 	private String currentKey;
+	private int anzahlDokumente;
 
 	private String northKey;
 	private String eastKey;
@@ -38,6 +39,7 @@ public class MortalComBot {
 		setCurrentX(input.nextInt());// X-Koordinate der Startposition dieses Player
 		setCurrentY(input.nextInt());// Y-Koordinate der Startposition dieses Players
 		input.nextLine(); // Beenden der zweiten Zeile
+		setAnzahlDokumente(0);
 	}
 	
 	public void startFeldEinlesen(MazeUnknown maze) {
@@ -133,7 +135,7 @@ public class MortalComBot {
 	}
 
 	public String geheZuSachbearbeiter() {
-		String ausgabe = "FINISH " + this.getPlayerId() + " 0";
+		String ausgabe = "FINISH " + getPlayerId() +" "+ getAnzahlDokumente();
 		return ausgabe;
 	}
 
@@ -334,6 +336,14 @@ public class MortalComBot {
 
 	public void setSouthKey(String southKey) {
 		this.southKey = southKey;
+	}
+
+	public int getAnzahlDokumente() {
+		return anzahlDokumente;
+	}
+
+	public void setAnzahlDokumente(int anzahlDokumente) {
+		this.anzahlDokumente = anzahlDokumente;
 	}
 
 }

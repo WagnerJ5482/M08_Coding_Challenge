@@ -13,6 +13,7 @@ public class MazeUnknown {
 	private int breite;
 	private int level;
 	private List<Integer> anzahlBesuche;
+	private Dokument dokument;
 
 	private Map<String, Feld> maze = new HashMap<String, Feld>();
 	private Collection<Feld> moeglicheFelder;
@@ -39,6 +40,11 @@ public class MazeUnknown {
 			}
 		}
 	}
+	
+	public Feld getFeld(int i, int j) {
+		String key = i + "," + j;
+		return maze.get(key);
+	}
 
 	public void moeglicheFelder(MortalComBot bot) {
 		this.moeglicheFelder = new ArrayList<Feld>();
@@ -57,6 +63,10 @@ public class MazeUnknown {
 		if (moeglicheFelder.size() == 1) {
 			for (Feld feld : moeglicheFelder) {
 				bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
+				if(feld.getTyp().contains("FORM " +bot.getPlayerId()+" ")) {
+					String[] nrVomDokumen	= feld.getTyp().split(" "); 
+					setDokument(new Dokument(Integer.parseInt(nrVomDokumen[2]),feld));
+				}
 				return;
 			}
 		} 
@@ -127,6 +137,14 @@ public class MazeUnknown {
 
 	public void setMaze(Map<String, Feld> maze) {
 		this.maze = maze;
+	}
+
+	public Dokument getDokument() {
+		return dokument;
+	}
+
+	public void setDokument(Dokument dokument) {
+		this.dokument = dokument;
 	}
 
 }
