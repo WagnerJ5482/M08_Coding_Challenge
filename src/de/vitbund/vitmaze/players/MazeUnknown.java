@@ -1,141 +1,124 @@
 package de.vitbund.vitmaze.players;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.Scanner;
 
 public class MazeUnknown {
-	int laenge;
-	int breite;
-	int level;
-	int[][] flaeche;
-	
-	String lastActionsResult;
-	String currentCellStatus;
-	String northCellStatus;
-	String eastCellStatus;
-	String southCellStatus;
-	String westCellStatus;
-	
-	
+	private int laenge;
+	private int breite;
+	private int level;
+
+	private Map<String, Feld> maze = new HashMap<String, Feld>();
+	private Collection<Feld> moeglicheFelder;
+
+	private Map<String, Feld> freieFelder = new HashMap<String, Feld>();
+
 	public MazeUnknown(Scanner input) {
 		// INIT - Auslesen der Initialdaten
 		// 1. Zeile: Maze Infos
-		this.setBreite(input.nextInt()); // X-Groesse des Spielfeldes (Breite)
-		this.setLaenge(input.nextInt()); // Y-Groesse des Spielfeldes (Hoehe)
-		this.setLevel(input.nextInt()); // Level des Matches
+		setBreite(input.nextInt()); // X-Groesse des Spielfeldes (Breite)
+		setLaenge(input.nextInt()); // Y-Groesse des Spielfeldes (Hoehe)
+		setLevel(input.nextInt()); // Level des Matches
 		input.nextLine(); // Beenden der ersten Zeile
-		this.flaeche = new int[breite][laenge];
-		befuelleFlaeche();
-		
+		fillMaze();
 	}
-	
-	private void befuelleFlaeche() {
-		for (int i = 0; i < flaeche.length; i++) {
-			for (int j = 0; j < flaeche[i].length; j++) {
-				
+
+	public void fillMaze() {
+		for (int i = 0; i < getBreite(); i++) {
+			for (int j = 0; j < getLaenge(); j++) {
+				Feld feld = new Feld(i, j, "", "", 99, false);
+				String key = i + "," + j;
+				maze.put(key, feld);
+
 			}
 		}
 	}
 
-	public void benachbarteFelderFuellen(Scanner input) {
-	 setLastActionsResult(input.nextLine());
-	 setCurrentCellStatus(input.nextLine());
-	 setNorthCellStatus(input.nextLine());
-	 setEastCellStatus(input.nextLine());
-	 setSouthCellStatus(input.nextLine());
-	 setWestCellStatus(input.nextLine());
-	 }
-	
-	public String bewegeBot(MortalComBot bot) {
-			
-		if (getNorthCellStatus().equals("FLOOR") && getLastActionsResult().contains("NORTH")) return "go north";
-		if (getEastCellStatus().equals("FLOOR")&& getLastActionsResult().contains("EAST")) return "go east";
-		if (getSouthCellStatus().equals("FLOOR")&& getLastActionsResult().contains("SOUTH")) return "go south";
-		if (getWestCellStatus().equals("FLOOR")&& getLastActionsResult().contains("WEST")) return "go west";
-		pruefeSB(bot);
-		return "";	
-	}
-	
-	public String pruefeSB(MortalComBot bot) {
-		if (currentCellStatus.equals("FINISH "+bot.getPlayerId()+" 0")){
-			return "FINISH 1 0";
+	public void moeglicheFelder(MortalComBot bot) {
+		this.moeglicheFelder = new ArrayList<Feld>();
+		for (Feld feld : bot.getNachbarFelder()) {
+			System.err.println("besucht: "+feld.getSchluessel()+feld.isBesucht());
+			if (!("WALL").equals(feld.getTyp())) {
+				moeglicheFelder.add(maze.get(feld.getSchluessel()));
+			} else {
+				feld.setHimmelsrichtung("");
+				feld.setTyp("WALL");
+				maze.put(feld.getSchluessel(), feld);
 			}
-		return "";
+		}
 	}
-	
+
+	public boolean naechstesFeld(MortalComBot bot) {
+		if (moeglicheFelder.size() == 1) {
+			for (Feld feld : moeglicheFelder) {
+				System.err.println(feld.getHimmelsrichtung());
+				bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
+//				bot.bewegeNach();
+				return true;
+			}
+
+		} else {
+			for (Feld feld : moeglicheFelder) {
+				if (feld.isBesucht() == false) {
+					System.err.println("Feld XY" + feld.getSchluessel());
+					bot.setzeNaechstesFeld(feld.getHimmelsrichtung());
+//					bot.bewegeNach();
+				}
+			}
+		} return false;
+		// toDO::
+	}
+
 	public int getLaenge() {
 		return laenge;
 	}
+
 	public void setLaenge(int laenge) {
 		this.laenge = laenge;
 	}
+
 	public int getBreite() {
 		return breite;
 	}
+
 	public void setBreite(int breite) {
 		this.breite = breite;
 	}
+
 	public int getLevel() {
 		return level;
 	}
+
 	public void setLevel(int level) {
 		this.level = level;
 	}
 
-
-	public String getLastActionsResult() {
-		return lastActionsResult;
+	public Collection<Feld> getMoeglicheFelder() {
+		return moeglicheFelder;
 	}
 
-	public void setLastActionsResult(String lastActionsResult) {
-		this.lastActionsResult = lastActionsResult;
+	public void setMoeglicheFelder(Collection<Feld> moeglicheFelder) {
+		this.moeglicheFelder = moeglicheFelder;
 	}
 
-	public String getCurrentCellStatus() {
-		return currentCellStatus;
+	public Map<String, Feld> getFreieFelder() {
+		return freieFelder;
 	}
 
-	public void setCurrentCellStatus(String currentCellStatus) {
-		this.currentCellStatus = currentCellStatus;
+	public void setFreieFelder(Map<String, Feld> freieFelder) {
+		this.freieFelder = freieFelder;
 	}
 
-	public String getNorthCellStatus() {
-		return northCellStatus;
+	public Map<String, Feld> getMaze() {
+		return maze;
 	}
 
-	public void setNorthCellStatus(String northCellStatus) {
-		this.northCellStatus = northCellStatus;
-	}
-
-	public String getEastCellStatus() {
-		return eastCellStatus;
-	}
-
-	public void setEastCellStatus(String eastCellStatus) {
-		this.eastCellStatus = eastCellStatus;
-	}
-
-	public String getSouthCellStatus() {
-		return southCellStatus;
-	}
-
-	public void setSouthCellStatus(String southCellStatus) {
-		this.southCellStatus = southCellStatus;
-	}
-
-	public String getWestCellStatus() {
-		return westCellStatus;
-	}
-
-	public void setWestCellStatus(String westCellStatus) {
-		this.westCellStatus = westCellStatus;
-	}
-
-	public int[][] getFlaeche() {
-		return flaeche;
-	}
-
-	public void setFlaeche(int[][] flaeche) {
-		this.flaeche = flaeche;
+	public void setMaze(Map<String, Feld> maze) {
+		this.maze = maze;
 	}
 
 }

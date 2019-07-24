@@ -3,7 +3,7 @@ package de.vitbund.vitmaze.players;
 import java.util.Scanner;
 
 /**
- * Klasse eines minimalen Bots für das VITMaze
+ * Klasse eines minimalen Bots fï¿½r das VITMaze
  * @author Patrick.Stalljohann
  * @version 1.0
  *
@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class MinimalBot {
 
 	/**
-	 * Hauptmethode zum Ausführen des Bots
+	 * Hauptmethode zum Ausfï¿½hren des Bots
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -19,26 +19,57 @@ public class MinimalBot {
 		Scanner input = new Scanner(System.in);
 		MazeUnknown maze = new MazeUnknown(input);
 		MortalComBot bot = new MortalComBot(input);
-
+		bot.startFeldEinlesen(maze);
 
 	
 		// TURN (Wiederholung je Runde notwendig)
 		while(input.hasNext()) {
-		
 			
 			// Rundeninformationen auslesen
-			maze.benachbarteFelderFuellen(input);
-			System.out.println(maze.bewegeBot(bot));
+			bot.felderEinlesen(input);
+			bot.erzeugeBenachbarteFelder(maze);
+			bot.sucheSB();
+			if (bot.sucheSB() == true) {
+				System.out.println(bot.geheZuSachbearbeiter());
+			} else {
+				maze.moeglicheFelder(bot);
+				maze.naechstesFeld(bot);
+				bot.setzeBot(maze);
+				
+			}
+			bot.bewegeNach();
 	
-			// Debug Information ausgeben (optional möglich)
-			System.err.println("Ergebnis Vorrunde: " + maze.getLastActionsResult());
-//			
-//			// Rundenaktion ausgeben
-//			if(currentCellStatus.contains("FINISH " + bot.getPlayerId() + " 0")) {
-//				System.out.println("FINISH 1 0");
+			// Debug Information ausgeben (optional mï¿½glich)
+			System.err.println("----------------------------------------------------");
+			System.err.println("Ergebnis Vorrunde: " + bot.getLastActionsResult());
+//			System.err.println("Anzahl moegliche Felder"+maze.getMoeglicheFelder().size());
+//			System.err.println("Anzahl freie Felder" + maze.getFreieFelder().size());
+//			System.err.println("current: "+bot.getCurrentFeld().getTyp());
+//			System.err.println("CX: "+bot.getCurrentFeld().getxKoordinate());
+//			System.err.println("CY: "+bot.getCurrentFeld().getyKoordinate());
+//			System.err.println("Norden: "+bot.getNorthFeld().getTyp());
+//			System.err.println("NX: "+bot.getNorthFeld().getxKoordinate());
+//			System.err.println("NY: "+bot.getNorthFeld().getyKoordinate());
+//			System.err.println("Westen: "+bot.getWestFeld().getTyp());
+//			System.err.println("WX: "+bot.getWestFeld().getxKoordinate());
+//			System.err.println("WY: "+bot.getWestFeld().getyKoordinate());
+//			System.err.println("Sueden: "+bot.getSouthFeld().getTyp());
+//			System.err.println("SX: "+bot.getSouthFeld().getxKoordinate());
+//			System.err.println("SY: "+bot.getSouthFeld().getyKoordinate());
+//			System.err.println("Osten: "+bot.getEastFeld().getTyp());
+//			System.err.println("OX: "+bot.getEastFeld().getxKoordinate());
+//			System.err.println("OY: "+bot.getEastFeld().getyKoordinate());
+//			for(Feld feld : bot.getCollNachbarFelder()) {
+//				System.err.println("ID: "+feld.getSchluessel());
 //			}
-//			System.out.println("go west");
-			
+//			System.err.println("");
+//			System.err.println("was ist dein SB?: "+bot.pruefeSB());
+//			System.err.println("SB gefunden? :"+bot.getWestCellStatus());
+//			System.err.println("SB gefunden? :"+bot.getEastCellStatus());
+//			System.err.println("SB gefunden? :"+bot.getNorthCellStatus());
+//			System.err.println("SB gefunden? :"+bot.getSouthCellStatus());
+			// Rundenaktion ausgeben
+//			System.out.println(bot.bewegeNach());
 		}
 		
 		// Eingabe schliessen (letzte Aktion)
