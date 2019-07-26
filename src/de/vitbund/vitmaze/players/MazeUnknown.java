@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class MazeUnknown {
+
 	private int laenge;
 	private int breite;
 	private int level;
@@ -16,6 +17,7 @@ public class MazeUnknown {
 	private Formular formular;
 
 	private Map<String, Feld> maze = new HashMap<String, Feld>();
+	private Map<String,Feld> unbekannteFelder;
 	private Collection<Feld> moeglicheFelder;
 
 	private Map<String, Feld> freieFelder = new HashMap<String, Feld>();
@@ -39,6 +41,7 @@ public class MazeUnknown {
 
 			}
 		}
+		unbekannteFelder.putAll(maze);
 	}
 	
 	public Feld getFeld(int i, int j) {
@@ -62,6 +65,10 @@ public class MazeUnknown {
 				maze.put(feld.getSchluessel(), feld);
 			}
 		}
+	}
+	
+	public void unbekannteFelder(Feld feld) {
+			unbekannteFelder.remove(feld);
 	}
 
 	public void naechstesFeld(MortalComBot bot) {
@@ -146,6 +153,30 @@ public class MazeUnknown {
 
 	public void setDokument(Formular formular) {
 		this.formular = formular;
+	}
+
+	public List<Integer> getAnzahlBesuche() {
+		return anzahlBesuche;
+	}
+
+	public void setAnzahlBesuche(List<Integer> anzahlBesuche) {
+		this.anzahlBesuche = anzahlBesuche;
+	}
+
+	public Formular getFormular() {
+		return formular;
+	}
+
+	public void setFormular(Formular formular) {
+		this.formular = formular;
+	}
+
+	public Map<String, Feld> getUnbekannteFelder() {
+		return unbekannteFelder;
+	}
+
+	public void setUnbekannteFelder(Map<String, Feld> unbekannteFelder) {
+		this.unbekannteFelder = unbekannteFelder;
 	}
 
 }

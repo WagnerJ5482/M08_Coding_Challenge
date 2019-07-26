@@ -1,6 +1,6 @@
 package de.vitbund.vitmaze.players;
 
-import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,9 +10,9 @@ public class MortalComBot {
 	private boolean sbFound = false;
 	private int currentY;
 	private int currentX;
-	private List<Formular> gesammelteFormulare = new ArrayList<Formular>();
+	private ArrayDeque<Formular> gesammelteFormulare = new ArrayDeque<Formular>();
 	private Feld[] nachbarFelder = new Feld[4];
-	private int nextForm;
+	private int nextForm = 0;
 	private int maxForm;
 
 	private Feld currentFeld;
@@ -51,6 +51,7 @@ public class MortalComBot {
 		this.currentFeld.anzahlBesucheErhoeen(1);
 		this.currentFeld.setKoordinaten(getCurrentKey(),maze);
 		maze.getMaze().put(getCurrentFeld().getSchluessel(), getCurrentFeld());
+		maze.unbekannteFelder(this.currentFeld);
 		if(maze.getLevel()==1)
 			setMaxForm(0);
 		else setNextForm(1);
@@ -72,24 +73,29 @@ public class MortalComBot {
 		this.northFeld.setTyp(getNorthCellStatus());
 		this.northFeld.setHimmelsrichtung("north");
 		this.northFeld.setKoordinaten(getNorthKey(),maze);
+		maze.unbekannteFelder(this.northFeld);
 		maze.getMaze().put(getNorthFeld().getSchluessel(), getNorthFeld());
 
 		this.eastFeld = (maze.getMaze().get(getEastKey()));
 		this.eastFeld.setTyp(getEastCellStatus());
 		this.eastFeld.setHimmelsrichtung("east");
 		this.eastFeld.setKoordinaten(getEastKey(),maze);
+		maze.unbekannteFelder(this.eastFeld);
 		maze.getMaze().put(getEastFeld().getSchluessel(), getEastFeld());
 
 		this.southFeld = (maze.getMaze().get(getSouthKey()));
 		this.southFeld.setTyp(getSouthCellStatus());
 		this.southFeld.setHimmelsrichtung("south");
 		this.southFeld.setKoordinaten(getSouthKey(),maze);
+		maze.unbekannteFelder(this.southFeld);
 		maze.getMaze().put(getSouthFeld().getSchluessel(), getSouthFeld());
 
 		this.westFeld = (maze.getMaze().get(getWestKey()));
 		this.westFeld.setTyp(getWestCellStatus());
+		System.err.println(getWestCellStatus());
 		this.westFeld.setHimmelsrichtung("west");
 		this.westFeld.setKoordinaten(getWestKey(),maze);
+		maze.unbekannteFelder(this.westFeld);
 		maze.getMaze().put(getWestFeld().getSchluessel(), getWestFeld());
 
 		fuelleNachbarFelder();
@@ -146,13 +152,14 @@ public class MortalComBot {
 	}
 	// ToDO: hier wird weitergearbeitet
 	public boolean sammleFormular() {
-		for (Formular formular: getAnzahlDokumente()) {
-			if (formular.getDokumentNummer() == getNextForm())
+		if(getAnzahlDokumente().peekLast().getDokumentNummer() == getNextForm())
+			setzeNaechstesFeld(getAnzahlDokumente().peek().getFeld().getHimmelsrichtung());;
 					return true;
-		}
-		return true;
 	}
-	
+	//PAuse
+	public void formularEingesammelt() {
+		getAnzahlDokumente().peekLast().
+	}
 	
 	public void sucheFormular() {
 		
@@ -354,11 +361,11 @@ public class MortalComBot {
 		this.southKey = southKey;
 	}
 
-	public List<Formular> getAnzahlDokumente() {
+	public ArrayDeque<Formular> getAnzahlDokumente() {
 		return gesammelteFormulare;
 	}
 
-	public void setAnzahlDokumente(List<Formular> anzahlDokumente) {
+	public void setAnzahlDokumente(ArrayDeque<Formular> anzahlDokumente) {
 		this.gesammelteFormulare = anzahlDokumente;
 	}
 
@@ -370,11 +377,11 @@ public class MortalComBot {
 		this.nextForm = nextForm;
 	}
 
-	public List<Formular> getGesammelteFormulare() {
+	public ArrayDeque<Formular> getGesammelteFormulare() {
 		return gesammelteFormulare;
 	}
 
-	public void setGesammelteFormulare(List<Formular> gesammelteFormulare) {
+	public void setGesammelteFormulare(ArrayDeque<Formular> gesammelteFormulare) {
 		this.gesammelteFormulare = gesammelteFormulare;
 	}
 
@@ -385,5 +392,6 @@ public class MortalComBot {
 	public void setMaxForm(int maxForm) {
 		this.maxForm = maxForm;
 	}
+
 
 }
