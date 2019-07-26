@@ -10,8 +10,10 @@ public class MortalComBot {
 	private boolean sbFound = false;
 	private int currentY;
 	private int currentX;
-	private List<Formular> anzahlDokumente = new ArrayList<Formular>();
+	private List<Formular> gesammelteFormulare = new ArrayList<Formular>();
 	private Feld[] nachbarFelder = new Feld[4];
+	private int nextForm;
+	private int maxForm;
 
 	private Feld currentFeld;
 	private Feld northFeld;
@@ -20,7 +22,6 @@ public class MortalComBot {
 	private Feld westFeld;
 
 	private String lastActionsResult;
-	//private String[] letzteHimmelsrichtung;
 	private String currentCellStatus;
 	private String northCellStatus;
 	private String eastCellStatus;
@@ -48,8 +49,11 @@ public class MortalComBot {
 		this.currentFeld.setHimmelsrichtung("middle");
 		this.currentFeld.setBesucht(true);
 		this.currentFeld.anzahlBesucheErhoeen(1);
-		this.currentFeld.setKoordinaten(getCurrentKey());
+		this.currentFeld.setKoordinaten(getCurrentKey(),maze);
 		maze.getMaze().put(getCurrentFeld().getSchluessel(), getCurrentFeld());
+		if(maze.getLevel()==1)
+			setMaxForm(0);
+		else setNextForm(1);
 	}
 
 	public void felderEinlesen(Scanner input) {
@@ -67,25 +71,25 @@ public class MortalComBot {
 		this.northFeld = (maze.getMaze().get(getNorthKey()));
 		this.northFeld.setTyp(getNorthCellStatus());
 		this.northFeld.setHimmelsrichtung("north");
-		this.northFeld.setKoordinaten(getNorthKey());
+		this.northFeld.setKoordinaten(getNorthKey(),maze);
 		maze.getMaze().put(getNorthFeld().getSchluessel(), getNorthFeld());
 
 		this.eastFeld = (maze.getMaze().get(getEastKey()));
 		this.eastFeld.setTyp(getEastCellStatus());
 		this.eastFeld.setHimmelsrichtung("east");
-		this.eastFeld.setKoordinaten(getEastKey());
+		this.eastFeld.setKoordinaten(getEastKey(),maze);
 		maze.getMaze().put(getEastFeld().getSchluessel(), getEastFeld());
 
 		this.southFeld = (maze.getMaze().get(getSouthKey()));
 		this.southFeld.setTyp(getSouthCellStatus());
 		this.southFeld.setHimmelsrichtung("south");
-		this.southFeld.setKoordinaten(getSouthKey());
+		this.southFeld.setKoordinaten(getSouthKey(),maze);
 		maze.getMaze().put(getSouthFeld().getSchluessel(), getSouthFeld());
 
 		this.westFeld = (maze.getMaze().get(getWestKey()));
 		this.westFeld.setTyp(getWestCellStatus());
 		this.westFeld.setHimmelsrichtung("west");
-		this.westFeld.setKoordinaten(getWestKey());
+		this.westFeld.setKoordinaten(getWestKey(),maze);
 		maze.getMaze().put(getWestFeld().getSchluessel(), getWestFeld());
 
 		fuelleNachbarFelder();
@@ -129,13 +133,33 @@ public class MortalComBot {
 			if (nachbarFeld.getTyp().equals(geheZuSachbearbeiter())) {
 				setzeNaechstesFeld(nachbarFeld.getHimmelsrichtung());
 				return true;
-			}
+			} else if (nachbarFeld.getTyp().contains("FINISH "+getPlayerId())) 
+				setMaxForm(setzeMaxForm(nachbarFeld));
 		}
 		return false;
 	}
+	
+	public int setzeMaxForm(Feld nachbarFeld) {
+		String[] split = nachbarFeld.getTyp().split(" ");
+		return Integer.parseInt(split[2]);
+		
+	}
+	// ToDO: hier wird weitergearbeitet
+	public boolean sammleFormular() {
+		for (Formular formular: getAnzahlDokumente()) {
+			if (formular.getDokumentNummer() == getNextForm())
+					return true;
+		}
+		return true;
+	}
+	
+	
+	public void sucheFormular() {
+		
+	}
 
 	public String geheZuSachbearbeiter() {
-		String ausgabe = "FINISH " + getPlayerId() +" "+ getAnzahlDokumente();
+		String ausgabe = "FINISH " + getPlayerId() +" "+ getMaxForm();
 		return ausgabe;
 	}
 
@@ -331,11 +355,35 @@ public class MortalComBot {
 	}
 
 	public List<Formular> getAnzahlDokumente() {
-		return anzahlDokumente;
+		return gesammelteFormulare;
 	}
 
 	public void setAnzahlDokumente(List<Formular> anzahlDokumente) {
-		this.anzahlDokumente = anzahlDokumente;
+		this.gesammelteFormulare = anzahlDokumente;
+	}
+
+	public int getNextForm() {
+		return nextForm;
+	}
+
+	public void setNextForm(int nextForm) {
+		this.nextForm = nextForm;
+	}
+
+	public List<Formular> getGesammelteFormulare() {
+		return gesammelteFormulare;
+	}
+
+	public void setGesammelteFormulare(List<Formular> gesammelteFormulare) {
+		this.gesammelteFormulare = gesammelteFormulare;
+	}
+
+	public int getMaxForm() {
+		return maxForm;
+	}
+
+	public void setMaxForm(int maxForm) {
+		this.maxForm = maxForm;
 	}
 
 }

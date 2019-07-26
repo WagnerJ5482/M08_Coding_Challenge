@@ -8,17 +8,18 @@ public class Feld {
 	private boolean besucht;
 	private int anzahlBesuche;
 	private int wegeKosten;
+
 	/*
 	 * Standard Konstruktor;
 	 */
 	public Feld() {
-		
+
 	}
-	
+
 	/*
 	 * Konstruktor zum generieren eines Level - Feldes
 	 */
-	public Feld (int x, int y, String typ, String himmelsrichtung, int wegeKosten, boolean besucht, int anzahlBesuche) {
+	public Feld(int x, int y, String typ, String himmelsrichtung, int wegeKosten, boolean besucht, int anzahlBesuche) {
 		setxKoordinate(x);
 		setyKoordinate(y);
 		setTyp(typ);
@@ -27,17 +28,29 @@ public class Feld {
 		setHimmelsrichtung(himmelsrichtung);
 		setAnzahlBesuche(anzahlBesuche);
 	}
-	
-	public void setKoordinaten(String schluessel) {
+
+	public void setKoordinaten(String schluessel, MazeUnknown maze) {
 		String[] key = schluessel.split(",");
-		setxKoordinate(Integer.parseInt(key[0]));
-		setyKoordinate(Integer.parseInt(key[1]));
+		int x = Integer.parseInt(key[0]);
+		int y = Integer.parseInt(key[1]);
+		System.err.println(x +","+ y);
+		if (key[0].equals(null))
+			setxKoordinate(((maze.getBreite()-1)));
+		else if (x > maze.getBreite())
+			setxKoordinate(0);
+		else setxKoordinate(x);
+		
+		if (key[1].equals(null))
+			setyKoordinate(((maze.getLaenge()-1)));
+		else if(y>maze.getLaenge())
+			setyKoordinate(0);
+		else
+			setyKoordinate(y);
 	}
-	
+
 	public void anzahlBesucheErhoeen(int zahl) {
 		this.anzahlBesuche += zahl;
 	}
-
 
 	public int getxKoordinate() {
 		return xKoordinate;
@@ -72,7 +85,7 @@ public class Feld {
 	}
 
 	public String getSchluessel() {
-		return getxKoordinate()+","+getyKoordinate();
+		return getxKoordinate() + "," + getyKoordinate();
 	}
 
 	public boolean isBesucht() {
