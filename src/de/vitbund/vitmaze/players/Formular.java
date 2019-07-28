@@ -13,6 +13,11 @@ public class Formular {
 		setDokumentNummer(dokumentNummer);// welche Nummer hat das Dokument;
 		setFeld(feld); // wo liegt ein Dokument
 	}
+	
+	static int extrahiereFormNummer(Feld feld) {
+		String[] split = feld.getTyp().split(" ");
+		return Integer.parseInt(split[2]);
+	}
 
 	public int getDokumentNummer() {
 		return dokumentNummer;

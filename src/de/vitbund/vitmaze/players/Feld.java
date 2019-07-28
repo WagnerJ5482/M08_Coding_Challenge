@@ -33,7 +33,6 @@ public class Feld {
 		String[] key = schluessel.split(",");
 		int x = Integer.parseInt(key[0]);
 		int y = Integer.parseInt(key[1]);
-		System.err.println(x +","+ y);
 		if (key[0].equals(null))
 			setxKoordinate(((maze.getBreite()-1)));
 		else if (x > maze.getBreite())

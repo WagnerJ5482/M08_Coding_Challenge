@@ -1,7 +1,9 @@
 package de.vitbund.vitmaze.players;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Scanner;
 
 public class MortalComBot {
@@ -10,7 +12,7 @@ public class MortalComBot {
 	private boolean sbFound = false;
 	private int currentY;
 	private int currentX;
-	private ArrayDeque<Formular> gesammelteFormulare = new ArrayDeque<Formular>();
+	private List<Formular> gesammelteFormulare = new ArrayList<Formular>();
 	private Feld[] nachbarFelder = new Feld[4];
 	private int nextForm = 0;
 	private int maxForm;
@@ -35,6 +37,9 @@ public class MortalComBot {
 	private String westKey;
 	private String southKey;
 
+	private int laenge;
+	private int breite;
+
 	public MortalComBot(Scanner input) {
 		// 2. Zeile: Player Infos
 		this.playerId = input.nextInt(); // id dieses Players / Bots
@@ -42,19 +47,26 @@ public class MortalComBot {
 		setCurrentY(input.nextInt());// Y-Koordinate der Startposition dieses Players
 		input.nextLine(); // Beenden der zweiten Zeile
 	}
-	
+
 	public void startFeldEinlesen(MazeUnknown maze) {
-		this.currentFeld =maze.getMaze().get(getCurrentKey());
+		this.currentFeld = maze.getMaze().get(getCurrentKey());
 		this.currentFeld.setTyp("FLOOR");
 		this.currentFeld.setHimmelsrichtung("middle");
 		this.currentFeld.setBesucht(true);
 		this.currentFeld.anzahlBesucheErhoeen(1);
-		this.currentFeld.setKoordinaten(getCurrentKey(),maze);
+		this.currentFeld.setKoordinaten(getCurrentKey(), maze);
 		maze.getMaze().put(getCurrentFeld().getSchluessel(), getCurrentFeld());
-		maze.unbekannteFelder(this.currentFeld);
-		if(maze.getLevel()==1)
+		maze.getUnbekannteFelder().remove(this.currentFeld.getSchluessel());
+//		gesammelteFormulare.add(new Formular(0, this.currentFeld));
+		if (maze.getLevel() == 1)
 			setMaxForm(0);
-		else setNextForm(1);
+		else {
+			setNextForm(1);
+			setMaxForm(66);
+		}
+
+		this.laenge = maze.getLaenge();
+		this.breite = maze.getBreite();
 	}
 
 	public void felderEinlesen(Scanner input) {
@@ -72,30 +84,29 @@ public class MortalComBot {
 		this.northFeld = (maze.getMaze().get(getNorthKey()));
 		this.northFeld.setTyp(getNorthCellStatus());
 		this.northFeld.setHimmelsrichtung("north");
-		this.northFeld.setKoordinaten(getNorthKey(),maze);
-		maze.unbekannteFelder(this.northFeld);
+		this.northFeld.setKoordinaten(getNorthKey(), maze);
+		maze.getUnbekannteFelder().remove(this.northFeld.getSchluessel());
 		maze.getMaze().put(getNorthFeld().getSchluessel(), getNorthFeld());
 
 		this.eastFeld = (maze.getMaze().get(getEastKey()));
 		this.eastFeld.setTyp(getEastCellStatus());
 		this.eastFeld.setHimmelsrichtung("east");
-		this.eastFeld.setKoordinaten(getEastKey(),maze);
-		maze.unbekannteFelder(this.eastFeld);
+		this.eastFeld.setKoordinaten(getEastKey(), maze);
+		maze.getUnbekannteFelder().remove(this.eastFeld.getSchluessel());
 		maze.getMaze().put(getEastFeld().getSchluessel(), getEastFeld());
 
 		this.southFeld = (maze.getMaze().get(getSouthKey()));
 		this.southFeld.setTyp(getSouthCellStatus());
 		this.southFeld.setHimmelsrichtung("south");
-		this.southFeld.setKoordinaten(getSouthKey(),maze);
-		maze.unbekannteFelder(this.southFeld);
+		this.southFeld.setKoordinaten(getSouthKey(), maze);
+		maze.getUnbekannteFelder().remove(this.southFeld.getSchluessel());
 		maze.getMaze().put(getSouthFeld().getSchluessel(), getSouthFeld());
 
 		this.westFeld = (maze.getMaze().get(getWestKey()));
 		this.westFeld.setTyp(getWestCellStatus());
-		System.err.println(getWestCellStatus());
 		this.westFeld.setHimmelsrichtung("west");
-		this.westFeld.setKoordinaten(getWestKey(),maze);
-		maze.unbekannteFelder(this.westFeld);
+		this.westFeld.setKoordinaten(getWestKey(), maze);
+		maze.getUnbekannteFelder().remove(this.westFeld.getSchluessel());
 		maze.getMaze().put(getWestFeld().getSchluessel(), getWestFeld());
 
 		fuelleNachbarFelder();
@@ -103,18 +114,18 @@ public class MortalComBot {
 
 	public void setzeBot(MazeUnknown maze) {
 		switch (getLastActionsResult()) {
-		case "OK": 
+		case "OK":
 			erzeugeBenachbarteFelder(maze);
 			break;
 		case "OK NORTH":
 			getSouthFeld().setBesucht(true);
 			getSouthFeld().anzahlBesucheErhoeen(1);
 			break;
-		case "OK WEST": 
+		case "OK WEST":
 			getEastFeld().setBesucht(true);
 			getEastFeld().anzahlBesucheErhoeen(1);
 			break;
-		case "OK SOUTH": 
+		case "OK SOUTH":
 			getNorthFeld().setBesucht(true);
 			getNorthFeld().anzahlBesucheErhoeen(1);
 			break;
@@ -124,6 +135,29 @@ public class MortalComBot {
 			break;
 		default:
 			break;
+		}
+	}
+
+	public void aktuellesFeldPruefen(MazeUnknown maze) {
+		System.err.println(currentCellStatus);
+		String formularFuerMich = "FORM "+getPlayerId()+" "+getNextForm();
+		String alleFormulareEingesammelt = "FINISH "+getPlayerId()+" "+getMaxForm();
+		System.err.println(formularFuerMich);
+		System.err.println(alleFormulareEingesammelt);
+		if(this.currentCellStatus.equals(formularFuerMich)) {
+			System.out.println("take");
+			setNextForm((getNextForm() + 1));
+			setzeAlleFelderAufUnbesucht(maze);
+		}
+		if (this.currentCellStatus.equals(alleFormulareEingesammelt)) {
+			System.out.println("finish");
+		}
+	}
+	
+	private void setzeAlleFelderAufUnbesucht(MazeUnknown maze) {
+		for (String key: maze.getFreieFelder().keySet()) {
+			Feld feld = maze.getFreieFelder().get(key);
+			feld.setBesucht(false);
 		}
 	}
 
@@ -139,59 +173,60 @@ public class MortalComBot {
 			if (nachbarFeld.getTyp().equals(geheZuSachbearbeiter())) {
 				setzeNaechstesFeld(nachbarFeld.getHimmelsrichtung());
 				return true;
-			} else if (nachbarFeld.getTyp().contains("FINISH "+getPlayerId())) 
-				setMaxForm(setzeMaxForm(nachbarFeld));
+			} else if (nachbarFeld.getTyp().contains("FINISH " + getPlayerId())) {
+				System.err.println(ermittleMaxAnzahlFormulare(nachbarFeld));
+				setMaxForm(ermittleMaxAnzahlFormulare(nachbarFeld));}
+			else
+				return false;
 		}
 		return false;
 	}
-	
-	public int setzeMaxForm(Feld nachbarFeld) {
+
+	public int ermittleMaxAnzahlFormulare(Feld nachbarFeld) {
 		String[] split = nachbarFeld.getTyp().split(" ");
 		return Integer.parseInt(split[2]);
-		
+
 	}
-	// ToDO: hier wird weitergearbeitet
-	public boolean sammleFormular() {
-		if(getAnzahlDokumente().peekLast().getDokumentNummer() == getNextForm())
-			setzeNaechstesFeld(getAnzahlDokumente().peek().getFeld().getHimmelsrichtung());;
-					return true;
-	}
-	//PAuse
-	public void formularEingesammelt() {
-		getAnzahlDokumente().peekLast().
-	}
-	
-	public void sucheFormular() {
-		
+
+	public boolean sucheFormular() {
+		for (Feld nachbarFeld : getNachbarFelder()) {
+			if (nachbarFeld.getTyp().equals("FORM " + getPlayerId() + " " + getNextForm())) {
+				setzeNaechstesFeld(nachbarFeld.getHimmelsrichtung());
+				return true;
+			} else if (nachbarFeld.getTyp().contains("FORM " + getPlayerId() + " ")) {
+				getAnzahlDokumente().add(new Formular(Formular.extrahiereFormNummer(nachbarFeld), nachbarFeld));
+			}
+		}
+		return false;
 	}
 
 	public String geheZuSachbearbeiter() {
-		String ausgabe = "FINISH " + getPlayerId() +" "+ getMaxForm();
+		String ausgabe = "FINISH " + getPlayerId() + " " + getMaxForm();
 		return ausgabe;
 	}
 
 	public void bewegeNach() {
-			switch (getNaechstesFeld()) {
-			case "north":
-				setCurrentX(getNorthFeld().getxKoordinate());
-				setCurrentY(getNorthFeld().getyKoordinate());
-				break;
-			case "east":
-				setCurrentX(getEastFeld().getxKoordinate());
-				setCurrentY(getEastFeld().getyKoordinate());
-				break;
-			case "south":
-				setCurrentX(getSouthFeld().getxKoordinate());
-				setCurrentY(getSouthFeld().getyKoordinate());
-				break;
-			case "west":
-				setCurrentX(getWestFeld().getxKoordinate());
-				setCurrentY(getWestFeld().getyKoordinate());
-				break;
-			default:
-			}
-			System.out.println("go "+ getNaechstesFeld());
+		switch (getNaechstesFeld()) {
+		case "north":
+			setCurrentX(getNorthFeld().getxKoordinate());
+			setCurrentY(getNorthFeld().getyKoordinate());
+			break;
+		case "east":
+			setCurrentX(getEastFeld().getxKoordinate());
+			setCurrentY(getEastFeld().getyKoordinate());
+			break;
+		case "south":
+			setCurrentX(getSouthFeld().getxKoordinate());
+			setCurrentY(getSouthFeld().getyKoordinate());
+			break;
+		case "west":
+			setCurrentX(getWestFeld().getxKoordinate());
+			setCurrentY(getWestFeld().getyKoordinate());
+			break;
+		default:
 		}
+		System.out.println("go " + getNaechstesFeld());
+	}
 
 	public int getPlayerId() {
 		return playerId;
@@ -330,7 +365,10 @@ public class MortalComBot {
 	}
 
 	public String getNorthKey() {
-		return getCurrentX() + "," + (getCurrentY() - 1);
+		if (getCurrentY() == 0)
+			return (getCurrentX() + "," + (this.laenge - 1));
+		else
+			return getCurrentX() + "," + (getCurrentY() - 1);
 	}
 
 	public void setNorthKey(String northKey) {
@@ -338,7 +376,10 @@ public class MortalComBot {
 	}
 
 	public String getEastKey() {
-		return (getCurrentX() + 1) + "," + getCurrentY();
+		if (getCurrentX() == (this.breite - 1))
+			return (0 + "," + getCurrentY());
+		else
+			return (getCurrentX() + 1) + "," + getCurrentY();
 	}
 
 	public void setEastKey(String eastKey) {
@@ -346,6 +387,8 @@ public class MortalComBot {
 	}
 
 	public String getWestKey() {
+		if (getCurrentX() == 0)
+			return (this.breite - 1 + "," + getCurrentY());
 		return (getCurrentX() - 1) + "," + getCurrentY();
 	}
 
@@ -354,18 +397,21 @@ public class MortalComBot {
 	}
 
 	public String getSouthKey() {
-		return getCurrentX() + "," + (getCurrentY() + 1);
+		if (getCurrentY() == (this.laenge - 1))
+			return (getCurrentX() + "," + 0);
+		else
+			return getCurrentX() + "," + (getCurrentY() + 1);
 	}
 
 	public void setSouthKey(String southKey) {
 		this.southKey = southKey;
 	}
 
-	public ArrayDeque<Formular> getAnzahlDokumente() {
+	public List<Formular> getAnzahlDokumente() {
 		return gesammelteFormulare;
 	}
 
-	public void setAnzahlDokumente(ArrayDeque<Formular> anzahlDokumente) {
+	public void setAnzahlDokumente(List<Formular> anzahlDokumente) {
 		this.gesammelteFormulare = anzahlDokumente;
 	}
 
@@ -377,11 +423,11 @@ public class MortalComBot {
 		this.nextForm = nextForm;
 	}
 
-	public ArrayDeque<Formular> getGesammelteFormulare() {
+	public List<Formular> getGesammelteFormulare() {
 		return gesammelteFormulare;
 	}
 
-	public void setGesammelteFormulare(ArrayDeque<Formular> gesammelteFormulare) {
+	public void setGesammelteFormulare(List<Formular> gesammelteFormulare) {
 		this.gesammelteFormulare = gesammelteFormulare;
 	}
 
@@ -392,6 +438,5 @@ public class MortalComBot {
 	public void setMaxForm(int maxForm) {
 		this.maxForm = maxForm;
 	}
-
 
 }

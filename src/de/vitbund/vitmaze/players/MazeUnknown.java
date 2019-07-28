@@ -17,7 +17,7 @@ public class MazeUnknown {
 	private Formular formular;
 
 	private Map<String, Feld> maze = new HashMap<String, Feld>();
-	private Map<String,Feld> unbekannteFelder;
+	private Map<String,Feld> unbekannteFelder = new HashMap<String,Feld>();
 	private Collection<Feld> moeglicheFelder;
 
 	private Map<String, Feld> freieFelder = new HashMap<String, Feld>();

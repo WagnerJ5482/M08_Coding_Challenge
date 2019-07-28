@@ -26,18 +26,18 @@ public class MinimalBot {
 
 		// TURN (Wiederholung je Runde notwendig)
 		while (input.hasNext()) {
-			while (maze.getUnbekannteFelder().size() == 0 || bot.sucheSB() == true);{
+//			while (maze.getUnbekannteFelder().size() == 0 || bot.sucheSB() == true);{
 				// Rundeninformationen auslesen
 				bot.felderEinlesen(input);
+				bot.aktuellesFeldPruefen(maze);
 				bot.erzeugeBenachbarteFelder(maze);
 				bot.setzeBot(maze);
 				if (bot.sucheSB() == true) {
 					bot.bewegeNach();
-					System.out.println(bot.geheZuSachbearbeiter());
-				} else if(bot.sammleFormular()==true){
+//					System.out.println(bot.geheZuSachbearbeiter());
+				} else if(bot.sucheFormular()==true){
 					bot.bewegeNach();
-					System.out.println("take");
-					bot.formularEingesammelt();
+//					System.out.println(bot.formularEinsammeln());
 					}
 				else {
 					maze.moeglicheFelder(bot);
@@ -45,7 +45,6 @@ public class MinimalBot {
 					bot.bewegeNach();
 				}
 
-			} 
 			
 			//
 			
@@ -54,11 +53,6 @@ public class MinimalBot {
 
 			// Debug Information ausgeben (optional m�glich)
 			System.err.println("Ergebnis Vorrunde: " + bot.getLastActionsResult());
-//			for(int i=0; i<=maze.getBreite();i++) {
-//				for (int j=0;j<=maze.getLaenge();j++) {
-//					System.err.println(maze.getFeld(i,j).getAnzahlBesuche());
-//				}
-//			}
 
 			// Rundenaktion ausgeben
 //			System.out.println(bot.bewegeNach());
