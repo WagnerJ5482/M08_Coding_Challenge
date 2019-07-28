@@ -3,7 +3,7 @@ package de.vitbund.vitmaze.players;
 import java.util.Scanner;
 
 /**
- * Klasse eines minimalen Bots fï¿½r das VITMaze
+ * Klasse eines minimalen Bots fuer das VITMaze
  * 
  * @author Patrick.Stalljohann
  * @version 1.0
@@ -12,7 +12,12 @@ import java.util.Scanner;
 public class MinimalBot {
 
 	/**
-	 * Hauptmethode zum Ausfï¿½hren des Bots
+	 * Hauptmethode zum Ausfuehren des Bots Es werden Maze und Bot deklariert,
+	 * initialisiert und instanziiert sowie der Startparameter des Bots gesetzt.
+	 * Rundenweise werden die Feldinformationen eingelesen, das aktuelle Feld auf
+	 * den Typ geprüft sowie die benachbarten Felder erzeugt. Dies wird so lange
+	 * wiederholt bis der Bot alle Formulare eingesammelt hat und bei der*m SB
+	 * abgegeben hat.
 	 * 
 	 * @param args
 	 */

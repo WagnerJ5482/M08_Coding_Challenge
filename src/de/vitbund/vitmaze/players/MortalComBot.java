@@ -4,6 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * 
+ * Die Klasse MortalComBot steuert die Aktionen des Bots. Dazu erzeugt diese
+ * Felder mit den notwendigen Information.
+ * 
+ * 
+ * 
+ * @author MortalKomBot
+ *
+ */
 public class MortalComBot {
 
 	private final int playerId;
@@ -38,6 +48,12 @@ public class MortalComBot {
 	private int laenge;
 	private int breite;
 
+	/**
+	 * Konstruktor der Klasse MortalComBot Es werden die Startposition sowie die
+	 * Spieler Identifikationsnummer gesetzt.
+	 * 
+	 * @param input
+	 */
 	public MortalComBot(Scanner input) {
 		// 2. Zeile: Player Infos
 		this.playerId = input.nextInt(); // id dieses Players / Bots
@@ -46,6 +62,11 @@ public class MortalComBot {
 		input.nextLine(); // Beenden der zweiten Zeile
 	}
 
+	/**
+	 * Die Methode startFeldEinlesen erzeugt das aktuelle Feld zu Beginn des Spiels.
+	 * 
+	 * @param maze
+	 */
 	public void startFeldEinlesen(MazeUnknown maze) {
 		this.currentFeld = maze.getMaze().get(getCurrentKey());
 		this.currentFeld.setTyp("FLOOR");
@@ -66,6 +87,12 @@ public class MortalComBot {
 		this.breite = maze.getBreite();
 	}
 
+	/**
+	 * Die Methode felderEinlesen wird rundenweise ausgeführt und speichert die
+	 * letzte Aktion sowie alle Felder, welche der Bot sieht.
+	 * 
+	 * @param input
+	 */
 	public void felderEinlesen(Scanner input) {
 
 		setLastActionsResult(input.nextLine());
@@ -76,6 +103,14 @@ public class MortalComBot {
 		setWestCellStatus(input.nextLine());
 	}
 
+	/**
+	 * Die Methode erzeugeBenachbarteFelder erstellt die sichtbaren Felder als
+	 * Instanz der Klasse Feld und speichert diese in dem Labyrinth (maze) ab.
+	 * Weiterhin werden die Felder dann in die Liste benachbarteFelder
+	 * abgespeichert.
+	 * 
+	 * @param maze
+	 */
 	public void erzeugeBenachbarteFelder(MazeUnknown maze) {
 
 		this.northFeld = (maze.getMaze().get(getNorthKey()));
@@ -109,6 +144,13 @@ public class MortalComBot {
 		fuelleNachbarFelder();
 	}
 
+	/**
+	 * Die Methode setzeBot setzt in der nächsten Runde das Feld auf besucht bzw.
+	 * erhöht die Anzahl der Besuche, von dem Feld der Bot kam. In der ersten Runde
+	 * werden nur die benachbarten Felder erzeugt.
+	 * 
+	 * @param maze
+	 */
 	public void setzeBot(MazeUnknown maze) {
 		switch (getLastActionsResult()) {
 		case "OK":
@@ -135,41 +177,59 @@ public class MortalComBot {
 		}
 	}
 
+	/**
+	 * Die Methode aktuellesFeldPruefen prüft, ob der Bot auf einem Formularfeld
+	 * oder bei der*dem SB steht und gibt entsprechende Befehle (take zum Aufnehmen
+	 * des Formulars oder finish zum Beenden des Spiels) aus.
+	 * 
+	 * @param maze
+	 * @return boolean
+	 */
 	public boolean aktuellesFeldPruefen(MazeUnknown maze) {
-		System.err.println("nextForm: "+getNextForm());
-		System.err.println("maxForm: "+getMaxForm());
-		System.err.println("currentCS: "+getCurrentCellStatus());
-		
-		if(getCurrentCellStatus().contains("FINISH "+getPlayerId()+" ")) {
+		System.err.println("nextForm: " + getNextForm());
+		System.err.println("maxForm: " + getMaxForm());
+		System.err.println("currentCS: " + getCurrentCellStatus());
+
+		if (getCurrentCellStatus().contains("FINISH " + getPlayerId() + " ")) {
 			setMaxForm(ermittleMaxAnzahlFormulare(getCurrentCellStatus()));
-			if(getNextForm() == getMaxForm()){
+			if (getNextForm() == getMaxForm()) {
 				System.out.println("finish");
 				return true;
 			}
 		}
-		String formularFuerMich = "FORM "+getPlayerId()+" "+getNextForm();
-		if(this.currentFeld.getTyp().equals(formularFuerMich)) {
+		String formularFuerMich = "FORM " + getPlayerId() + " " + getNextForm();
+		if (this.currentFeld.getTyp().equals(formularFuerMich)) {
 			System.out.println("take");
 			setNextForm((getNextForm() + 1));
-			setzeAlleFelderAufUnbesucht(maze);
 			return false;
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Die Methode ermittelt aus dem aktuellen CellStatus die maximale Anzahl der
+	 * Formulare (keine Fehlerbehandlung bei Status "FLOOR").
+	 * 
+	 * @param currentCellStatus
+	 * @return
+	 */
 	private int ermittleMaxAnzahlFormulare(String currentCellStatus) {
 		String[] split = currentCellStatus.split(" ");
 		return Integer.parseInt(split[2]);
 
 	}
-	
-	private void setzeAlleFelderAufUnbesucht(MazeUnknown maze) {
-		for (String key: maze.getFreieFelder().keySet()) {
-			Feld feld = maze.getFreieFelder().get(key);
-			feld.setBesucht(false);
-		}
-	}
 
+//	private void setzeAlleFelderAufUnbesucht(MazeUnknown maze) {
+//		for (String key: maze.getFreieFelder().keySet()) {
+//			Feld feld = maze.getFreieFelder().get(key);
+//			feld.setBesucht(false);
+//		}
+//	}
+
+	/**
+	 * Die Methode das Array Nachbarfelder mit den Felder (N, S, O, W).
+	 * 
+	 */
 	public void fuelleNachbarFelder() {
 		nachbarFelder[0] = getNorthFeld();
 		nachbarFelder[1] = getEastFeld();
@@ -177,33 +237,43 @@ public class MortalComBot {
 		nachbarFelder[3] = getWestFeld();
 	}
 
+	/**
+	 * Die Methode sucht in den Nachbarfeldern nach dem SB und setzt die
+	 * Himmelsrichtung für die nächste Runde
+	 * 
+	 * @return boolean
+	 */
 	public boolean sucheSB() {
 		for (Feld nachbarFeld : getNachbarFelder()) {
 			if (nachbarFeld.getTyp().contains("FINISH " + getPlayerId() + " ")) {
 				setzeNaechstesFeld(nachbarFeld.getHimmelsrichtung());
 				return true;
-			} 
+			}
 		}
 		return false;
 	}
-	
 
-
+	/**
+	 * sucht in den Nachbarfeldern nach Formularen und setzt die Himmelsrichtung für
+	 * die nächste Runde
+	 * 
+	 * @return boolean
+	 */
 	public boolean sucheFormular() {
 		for (Feld nachbarFeld : getNachbarFelder()) {
 			if (nachbarFeld.getTyp().equals("FORM " + getPlayerId() + " " + getNextForm())) {
 				setzeNaechstesFeld(nachbarFeld.getHimmelsrichtung());
 				return true;
-			} 
+			}
 		}
 		return false;
 	}
 
-//	public String geheZuSachbearbeiter() {
-//		String ausgabe =  + getNextForm();
-//		return ausgabe;
-//	}
-
+	/**
+	 * Die Methode entscheidet anhand der übergebenen Himmelsrichtung
+	 * (getNaechstesFeld) welche Koordinaten das aktuelle Feld haben soll. Dadurch
+	 * bewegt sich der Bot auf dem Spielfeld.
+	 */
 	public void bewegeNach() {
 		switch (getNaechstesFeld()) {
 		case "north":
@@ -227,142 +297,318 @@ public class MortalComBot {
 		System.out.println("go " + getNaechstesFeld());
 	}
 
+	/**
+	 * Standard getter für PlayerId (kein setter, da final)
+	 * 
+	 * @return playerId
+	 */
 	public int getPlayerId() {
 		return playerId;
 	}
 
+	/**
+	 * Standard getter für LastActionResult
+	 * 
+	 * @return lastActionResult
+	 */
 	public String getLastActionsResult() {
 		return lastActionsResult;
 	}
 
+	/**
+	 * Standard setter für LastActionResult
+	 * 
+	 * @param lastActionsResult
+	 */
 	public void setLastActionsResult(String lastActionsResult) {
 		this.lastActionsResult = lastActionsResult;
 	}
 
+	/**
+	 * Standard getter für CurrentCellStatus
+	 * 
+	 * @return currentCellStatus
+	 */
 	public String getCurrentCellStatus() {
 		return currentCellStatus;
 	}
 
+	/**
+	 * Standard setter für CurrentCellStatus
+	 * 
+	 * @param currentCellStatus
+	 */
 	public void setCurrentCellStatus(String currentCellStatus) {
 		this.currentCellStatus = currentCellStatus;
 	}
 
+	/**
+	 * Standard getter für NorthCellStatus
+	 * 
+	 * @return northCellStatus
+	 */
 	public String getNorthCellStatus() {
 		return northCellStatus;
 	}
 
+	/**
+	 * Standard setter für NorthCellStatus
+	 * 
+	 * @param northCellStatus
+	 */
 	public void setNorthCellStatus(String northCellStatus) {
 		this.northCellStatus = northCellStatus;
 	}
 
+	/**
+	 * Standard getter für EastCellStatus
+	 * 
+	 * @return eastCellStatus
+	 */
 	public String getEastCellStatus() {
 		return eastCellStatus;
 	}
 
+	/**
+	 * Standard setter für EastCellStatus
+	 * 
+	 * @param eastCellStatus
+	 */
 	public void setEastCellStatus(String eastCellStatus) {
 		this.eastCellStatus = eastCellStatus;
 	}
 
+	/**
+	 * Standard getter für SouthCellStatus
+	 * 
+	 * @return southCellStatus
+	 */
 	public String getSouthCellStatus() {
 		return southCellStatus;
 	}
 
+	/**
+	 * Standard setter für SouthCellStatus
+	 * 
+	 * @return southCellStatus
+	 */
 	public void setSouthCellStatus(String southCellStatus) {
 		this.southCellStatus = southCellStatus;
 	}
 
+	/**
+	 * Standard getter für WestCellStatus
+	 * 
+	 * @return westCellStatus
+	 */
 	public String getWestCellStatus() {
 		return westCellStatus;
 	}
 
+	/**
+	 * Standard setter für WestCellStatus
+	 * 
+	 * @return westCellStatus
+	 */
 	public void setWestCellStatus(String westCellStatus) {
 		this.westCellStatus = westCellStatus;
 	}
 
+	/**
+	 * Standard getter für CurrentX
+	 * 
+	 * @return currentX
+	 */
 	public int getCurrentX() {
 		return currentX;
 	}
 
+	/**
+	 * Standard setter für CurrentX
+	 * 
+	 * @param currentX
+	 */
 	public void setCurrentX(int currentX) {
 		this.currentX = currentX;
 	}
 
+	/**
+	 * Standard getter für CurrrentY
+	 * 
+	 * @return currentY
+	 */
 	public int getCurrentY() {
 		return currentY;
 	}
 
+	/**
+	 * Standard setter für CurrentY
+	 * 
+	 * @param currentY
+	 */
 	public void setCurrentY(int currentY) {
 		this.currentY = currentY;
 	}
 
+	/**
+	 * Standard getter für CurrentFeld
+	 * 
+	 * @return currentFeld
+	 */
 	public Feld getCurrentFeld() {
 		return currentFeld;
 	}
 
+	/**
+	 * Standard setter für CurrentFeld
+	 * 
+	 * @param currentFeld
+	 */
 	public void setCurrentFeld(Feld currentFeld) {
 		this.currentFeld = currentFeld;
 	}
 
+	/**
+	 * Standard getter für NorthFeld
+	 * 
+	 * @return northFeld
+	 */
 	public Feld getNorthFeld() {
 		return northFeld;
 	}
 
+	/**
+	 * Standard setter für NorthFeld
+	 * 
+	 * @param northFeld
+	 */
 	public void setNorthFeld(Feld northFeld) {
 		this.northFeld = northFeld;
 	}
 
+	/**
+	 * Standard getter für EastFeld
+	 * 
+	 * @return eastFeld
+	 */
 	public Feld getEastFeld() {
 		return eastFeld;
 	}
 
+	/**
+	 * Standard setter für EastFeld
+	 * 
+	 * @param eastFeld
+	 */
 	public void setEastFeld(Feld eastFeld) {
 		this.eastFeld = eastFeld;
 	}
 
+	/**
+	 * Standard getter für SouthFeld
+	 * 
+	 * @return southFeld
+	 */
 	public Feld getSouthFeld() {
 		return southFeld;
 	}
 
+	/**
+	 * Standard setter für SouthFeld
+	 * 
+	 * @param southFeld
+	 */
 	public void setSouthFeld(Feld southFeld) {
 		this.southFeld = southFeld;
 	}
 
+	/**
+	 * Standard getter für WestFeld
+	 * 
+	 * @return westFeld
+	 */
 	public Feld getWestFeld() {
 		return westFeld;
 	}
 
+	/**
+	 * Standard setter für WestFeld
+	 * 
+	 * @param westFeld
+	 */
 	public void setWestFeld(Feld westFeld) {
 		this.westFeld = westFeld;
 	}
 
+	/**
+	 * Methode zum setzen der Himmelsrichtung des nächsten Feldes.
+	 * 
+	 * @param himmelsrichtung
+	 */
 	public void setzeNaechstesFeld(String himmelsrichtung) {
 		this.naechstesFeld = himmelsrichtung;
 	}
 
+	/**
+	 * Standard getter für NaechtesFeld
+	 * 
+	 * @return naechstesFeld
+	 */
 	public String getNaechstesFeld() {
 		return naechstesFeld;
 	}
 
-	public Feld[] getNachbarFelder() {
-		return nachbarFelder;
-	}
-
+	/**
+	 * Standard setter für NaechstesFeld
+	 * 
+	 * @param naechstesFeld
+	 */
 	public void setNaechstesFeld(String naechstesFeld) {
 		this.naechstesFeld = naechstesFeld;
 	}
 
+	/**
+	 * Standard getter für NachbarFelder
+	 * 
+	 * @return nachbarFelder
+	 */
+	public Feld[] getNachbarFelder() {
+		return nachbarFelder;
+	}
+
+	/**
+	 * Standard getter für SBFound
+	 * 
+	 * @return sbFound
+	 */
 	public boolean isSbFound() {
 		return sbFound;
 	}
 
+	/**
+	 * Standard getter für CurrentKey
+	 * 
+	 * @return Schlüssel aus den aktuellen Koordinaten
+	 */
 	public String getCurrentKey() {
 		return getCurrentX() + "," + getCurrentY();
 	}
 
+	/**
+	 * Standard setter für CurrentKey
+	 * 
+	 * @param currentKey
+	 */
 	public void setCurrentKey(String currentKey) {
 		this.currentKey = currentKey;
 	}
 
+	/**
+	 * berechnet auf Grundlage der aktuellen Koordinaten die Nordposition unter
+	 * Berücksichtigung der Spielgrenzen.
+	 * 
+	 * @return Schlüssel für die Nordposition
+	 */
 	public String getNorthKey() {
 		if (getCurrentY() == 0)
 			return (getCurrentX() + "," + (this.laenge - 1));
@@ -370,10 +616,21 @@ public class MortalComBot {
 			return getCurrentX() + "," + (getCurrentY() - 1);
 	}
 
+	/**
+	 * Standard setter für NorthKey
+	 * 
+	 * @param northKey
+	 */
 	public void setNorthKey(String northKey) {
 		this.northKey = northKey;
 	}
 
+	/**
+	 * berechnet auf Grundlage der aktuellen Koordinaten die Ostposition unter
+	 * Berücksichtigung der Spielgrenzen.
+	 * 
+	 * @return Schlüssel für die Ostposition
+	 */
 	public String getEastKey() {
 		if (getCurrentX() == (this.breite - 1))
 			return (0 + "," + getCurrentY());
@@ -381,20 +638,42 @@ public class MortalComBot {
 			return (getCurrentX() + 1) + "," + getCurrentY();
 	}
 
+	/**
+	 * Standard setter für EastKey
+	 * 
+	 * @param eastKey
+	 */
 	public void setEastKey(String eastKey) {
 		this.eastKey = eastKey;
 	}
 
+	/**
+	 * berechnet auf Grundlage der aktuellen Koordinaten die Westposition unter
+	 * Berücksichtigung der Spielgrenzen.
+	 * 
+	 * @return Schlüssel für die Westposition
+	 */
 	public String getWestKey() {
 		if (getCurrentX() == 0)
 			return (this.breite - 1 + "," + getCurrentY());
 		return (getCurrentX() - 1) + "," + getCurrentY();
 	}
 
+	/**
+	 * Standard setter für WestKey
+	 * 
+	 * @param westKey
+	 */
 	public void setWestKey(String westKey) {
 		this.westKey = westKey;
 	}
 
+	/**
+	 * berechnet auf Grundlage der aktuellen Koordinaten die Südposition unter
+	 * Berücksichtigung der Spielgrenzen.
+	 * 
+	 * @return Schlüssel für die Südposition
+	 */
 	public String getSouthKey() {
 		if (getCurrentY() == (this.laenge - 1))
 			return (getCurrentX() + "," + 0);
@@ -402,38 +681,83 @@ public class MortalComBot {
 			return getCurrentX() + "," + (getCurrentY() + 1);
 	}
 
+	/**
+	 * Standard setter für SouthKey
+	 * 
+	 * @param southKey
+	 */
 	public void setSouthKey(String southKey) {
 		this.southKey = southKey;
 	}
 
+	/**
+	 * Standard getter für AnzahlDokumente
+	 * 
+	 * @return gesammelteFormulare
+	 */
 	public List<Formular> getAnzahlDokumente() {
 		return gesammelteFormulare;
 	}
 
+	/**
+	 * Standard setter für AnzahlDokumente
+	 * 
+	 * @param anzahlDokumente
+	 */
 	public void setAnzahlDokumente(List<Formular> anzahlDokumente) {
 		this.gesammelteFormulare = anzahlDokumente;
 	}
 
+	/**
+	 * Standard getter für NextForm
+	 * 
+	 * @return nextForm
+	 */
 	public int getNextForm() {
 		return nextForm;
 	}
 
+	/**
+	 * Standard setter für NextForm
+	 * 
+	 * @param nextForm
+	 */
 	public void setNextForm(int nextForm) {
 		this.nextForm = nextForm;
 	}
 
+	/**
+	 * Standard getter für GesammlteFormulare
+	 * 
+	 * @return gesammelteFormulare
+	 */
 	public List<Formular> getGesammelteFormulare() {
 		return gesammelteFormulare;
 	}
 
+	/**
+	 * Standard setter für GesammelteFormulare
+	 * 
+	 * @param gesammelteFormulare
+	 */
 	public void setGesammelteFormulare(List<Formular> gesammelteFormulare) {
 		this.gesammelteFormulare = gesammelteFormulare;
 	}
 
+	/**
+	 * Standard getter für MaxForm
+	 * 
+	 * @return maxForm
+	 */
 	public int getMaxForm() {
 		return maxForm;
 	}
 
+	/**
+	 * Standard setter für MaxForm
+	 * 
+	 * @param maxForm
+	 */
 	public void setMaxForm(int maxForm) {
 		this.maxForm = maxForm;
 	}
