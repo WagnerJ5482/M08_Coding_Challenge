@@ -58,7 +58,7 @@ public class Feld {
 	 *                   Spielfeldes gesetzt. Im Fall, dass x und/oder y über die
 	 *                   Breite bzw. Länge des Spielfeldes hinausgehen, werden diese
 	 *                   auf 0 gesetzt.
-	 * @param maze {@link maze MazeUnknown}
+	 * @param maze       {@link maze MazeUnknown}
 	 */
 
 	public void setKoordinaten(String schluessel, MazeUnknown maze) {
