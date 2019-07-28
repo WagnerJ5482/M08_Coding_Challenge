@@ -26,30 +26,24 @@ public class MinimalBot {
 
 		// TURN (Wiederholung je Runde notwendig)
 		while (input.hasNext()) {
-//			while (maze.getUnbekannteFelder().size() == 0 || bot.sucheSB() == true);{
+			do {
 				// Rundeninformationen auslesen
 				bot.felderEinlesen(input);
 				bot.aktuellesFeldPruefen(maze);
 				bot.erzeugeBenachbarteFelder(maze);
 				bot.setzeBot(maze);
-				if (bot.sucheSB() == true) {
+
+//				if (bot.sucheSB() == true) {
+//					bot.bewegeNach();
+//				} else 
+				if (bot.sucheFormular() == true) {
 					bot.bewegeNach();
-//					System.out.println(bot.geheZuSachbearbeiter());
-				} else if(bot.sucheFormular()==true){
-					bot.bewegeNach();
-//					System.out.println(bot.formularEinsammeln());
-					}
-				else {
+				} else {
 					maze.moeglicheFelder(bot);
 					maze.naechstesFeld(bot);
 					bot.bewegeNach();
 				}
-
-			
-			//
-			
-			// formulare gesehen & evtl schon gesammelt; arbeite AnzahlDokumente ab;
-			
+			} while (bot.aktuellesFeldPruefen(maze) == false);
 
 			// Debug Information ausgeben (optional m�glich)
 			System.err.println("Ergebnis Vorrunde: " + bot.getLastActionsResult());

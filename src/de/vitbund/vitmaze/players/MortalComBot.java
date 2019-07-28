@@ -57,7 +57,6 @@ public class MortalComBot {
 		this.currentFeld.setKoordinaten(getCurrentKey(), maze);
 		maze.getMaze().put(getCurrentFeld().getSchluessel(), getCurrentFeld());
 		maze.getUnbekannteFelder().remove(this.currentFeld.getSchluessel());
-//		gesammelteFormulare.add(new Formular(0, this.currentFeld));
 		if (maze.getLevel() == 1)
 			setMaxForm(0);
 		else {
@@ -138,20 +137,32 @@ public class MortalComBot {
 		}
 	}
 
-	public void aktuellesFeldPruefen(MazeUnknown maze) {
-		System.err.println(currentCellStatus);
+	public boolean aktuellesFeldPruefen(MazeUnknown maze) {
+		System.err.println("nextForm: "+getNextForm());
+		System.err.println("maxForm: "+getMaxForm());
+		System.err.println("currentCS: "+getCurrentCellStatus());
+		
+		if(getCurrentCellStatus().contains("FINISH "+getPlayerId()+" ")) {
+			setMaxForm(ermittleMaxAnzahlFormulare(getCurrentCellStatus()));
+			if(getNextForm() == getMaxForm()){
+				System.out.println("finish");
+				return true;
+			}
+		}
 		String formularFuerMich = "FORM "+getPlayerId()+" "+getNextForm();
-		String alleFormulareEingesammelt = "FINISH "+getPlayerId()+" "+getMaxForm();
-		System.err.println(formularFuerMich);
-		System.err.println(alleFormulareEingesammelt);
-		if(this.currentCellStatus.equals(formularFuerMich)) {
+		if(this.currentFeld.getTyp().equals(formularFuerMich)) {
 			System.out.println("take");
 			setNextForm((getNextForm() + 1));
 			setzeAlleFelderAufUnbesucht(maze);
+			return false;
 		}
-		if (this.currentCellStatus.equals(alleFormulareEingesammelt)) {
-			System.out.println("finish");
-		}
+		return false;
+	}
+	
+	private int ermittleMaxAnzahlFormulare(String currentCellStatus) {
+		String[] split = currentCellStatus.split(" ");
+		return Integer.parseInt(split[2]);
+
 	}
 	
 	private void setzeAlleFelderAufUnbesucht(MazeUnknown maze) {
@@ -170,40 +181,30 @@ public class MortalComBot {
 
 	public boolean sucheSB() {
 		for (Feld nachbarFeld : getNachbarFelder()) {
-			if (nachbarFeld.getTyp().equals(geheZuSachbearbeiter())) {
+			if (nachbarFeld.getTyp().contains("FINISH " + getPlayerId() + " ")) {
 				setzeNaechstesFeld(nachbarFeld.getHimmelsrichtung());
 				return true;
-			} else if (nachbarFeld.getTyp().contains("FINISH " + getPlayerId())) {
-				System.err.println(ermittleMaxAnzahlFormulare(nachbarFeld));
-				setMaxForm(ermittleMaxAnzahlFormulare(nachbarFeld));}
-			else
-				return false;
+			} 
 		}
 		return false;
 	}
+	
 
-	public int ermittleMaxAnzahlFormulare(Feld nachbarFeld) {
-		String[] split = nachbarFeld.getTyp().split(" ");
-		return Integer.parseInt(split[2]);
-
-	}
 
 	public boolean sucheFormular() {
 		for (Feld nachbarFeld : getNachbarFelder()) {
 			if (nachbarFeld.getTyp().equals("FORM " + getPlayerId() + " " + getNextForm())) {
 				setzeNaechstesFeld(nachbarFeld.getHimmelsrichtung());
 				return true;
-			} else if (nachbarFeld.getTyp().contains("FORM " + getPlayerId() + " ")) {
-				getAnzahlDokumente().add(new Formular(Formular.extrahiereFormNummer(nachbarFeld), nachbarFeld));
-			}
+			} 
 		}
 		return false;
 	}
 
-	public String geheZuSachbearbeiter() {
-		String ausgabe = "FINISH " + getPlayerId() + " " + getMaxForm();
-		return ausgabe;
-	}
+//	public String geheZuSachbearbeiter() {
+//		String ausgabe =  + getNextForm();
+//		return ausgabe;
+//	}
 
 	public void bewegeNach() {
 		switch (getNaechstesFeld()) {
